@@ -208,7 +208,7 @@
 };
 
 &bg_cdc {
-	status = "ok";
+	//status = "ok"; /*disable for calibrate cuase bg wear crash*/
 	vdd-spkr-supply = <&pm660_l11>;
 };
 
