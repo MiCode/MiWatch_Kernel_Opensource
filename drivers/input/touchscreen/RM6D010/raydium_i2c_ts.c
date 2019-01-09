@@ -4442,7 +4442,7 @@ exit_error:
     return ret;
 }
 
-
+/*
 static int raydium_fw_update_check(struct raydium_ts_data *raydium_ts)
 {
 
@@ -4507,7 +4507,7 @@ static int raydium_fw_update_check(struct raydium_ts_data *raydium_ts)
 exit_error:
     mutex_unlock(&raydium_ts->lock);
     return ret;
-}
+}*/
 
 #if defined(CONFIG_PM)
 static void raydium_ts_do_suspend(struct device *dev)
@@ -5189,7 +5189,7 @@ static int raydium_ts_probe(struct i2c_client *client,
 	raydium_irq_control(raydium_ts, DISABLE);
     printk(KERN_INFO "[touch]Raydium Touch driver version :0x%04X\n", RAYDIUM_VER);
 	raydium_irq_control(raydium_ts, ENABLE);
-#if 1
+#if 0
     //fw update check
     ret = raydium_fw_update_check(raydium_ts);
     if (ret < 0)
