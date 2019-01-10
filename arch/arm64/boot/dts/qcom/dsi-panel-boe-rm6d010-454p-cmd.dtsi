@@ -70,6 +70,10 @@
 		qcom,mdss-dsi-bllp-eof-power-mode;
 		qcom,mdss-dsi-bllp-power-mode;
 		qcom,mdss-dsi-lane-0-state;
+		qcom,mdss-dsi-te-pin-select = <1>;
+		qcom,mdss-dsi-te-dcs-command = <1>;
+		qcom,mdss-dsi-te-using-te-pin;
+		//qcom,mdss-dsi-te-check-enable;
 		qcom,mdss-dsi-panel-timings = [5D 12 0C 00 34 36 10 16 0F 03 04 00];
 		qcom,mdss-dsi-t-clk-post = <0x05>;
 		qcom,mdss-dsi-t-clk-pre = <0x15>;
@@ -83,5 +87,7 @@
 		qcom,mdss-dsi-panel-clockrate = <302060160>;
 		qcom,mdss-pan-physical-width-dimension = <36>;
 		qcom,mdss-pan-physical-height-dimension = <36>;
+		//qcom,esd-check-enabled;
+		qcom,mdss-dsi-panel-status-check-mode = "te_signal_check";
 	};
 };

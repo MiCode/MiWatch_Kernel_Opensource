@@ -103,7 +103,7 @@
 
 	qcom,platform-te-gpio = <&msm_gpio 24 0>;
 	qcom,platform-reset-gpio = <&msm_gpio 25 0>;
-	qcom,platform-bklight-en-gpio = <&msm_gpio 37 0>;
+	//qcom,platform-bklight-en-gpio = <&msm_gpio 37 0>;
 };
 
 &thermal_zones {
