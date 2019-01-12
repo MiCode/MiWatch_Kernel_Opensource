@@ -7,7 +7,7 @@
 #define I2C_VTG_MIN_UV    1800000
 #define I2C_VTG_MAX_UV    1800000
 
-#define RAYDIUM_VER     0x0010
+#define RAYDIUM_VER     0x0015
 
 #define CONFIG_TOUCHSCREEN_RM_TS
 
@@ -19,8 +19,9 @@
 #define RAYDIUM_RESET_DELAY_MSEC      100
 
 /*lihongshuai@*/
-#define RAYDIUM_CONFIG_OF
 #define RAYDIUM_CONFIG_FB
+#define RAYDIUM_CONFIG_OF
+#define RAYDIUM_UPDATE 0
 
 /* I2C bus slave address(ID) */
 #define RAYDIUM_I2C_EID    (0x5A)
@@ -29,7 +30,7 @@
 /* I2C R/W configuration literal */
 #define RAYDIUM_I2C_WRITE       I2C_SMBUS_WRITE
 #define RAYDIUM_I2C_READ        I2C_SMBUS_READ
-#define SYN_I2C_RETRY_TIMES     10
+#define SYN_I2C_RETRY_TIMES     2
 #define MAX_WRITE_PACKET_SIZE   64
 #define MAX_READ_PACKET_SIZE    64
 
@@ -97,16 +98,23 @@
 #define RAYDIUM_HOST_CMD_NO_OP              0x00
 #define RAYDIUM_HOST_CMD_PWR_SLEEP          0x30
 #define RAYDIUM_HOST_CMD_CALIBRATION        0x5C
-#define RAYDIUM_HOST_CMD_TP_MODE			0x60
-#define RAYDIUM_HOST_CMD_FT_MODE			0x61
+#define RAYDIUM_HOST_CMD_TP_MODE            0x60
+#define RAYDIUM_HOST_CMD_FT_MODE            0x61
 
 /* PDA2 literal */
 #define RAYDIUM_I2C_PDA2_PAGE_LENGTH        2    // entry byte + target page byte
+#define ENABLE_NEW_PALM			0
+#define ENABLE_ESD_CHECK		0
+//#define FILTER_POINTS
 
 /* Touch report */
 #define MAX_TOUCH_NUM                 2
-#define MAX_REPORT_PAKAGE_SIZE        35
-#define MAX_TCH_STATUS_PAKAGE_SIZE    2
+#define MAX_REPORT_PACKET_SIZE        35
+#if ENABLE_NEW_PALM
+#define MAX_TCH_STATUS_PACKET_SIZE    4
+#else
+#define MAX_TCH_STATUS_PACKET_SIZE    2
+#endif
 #define MAX_GESTURERESULT_SIZE        4
 #define PRESS_MAX                     0xFFFF
 #define WIDTH_MAX                     0xFFFF
@@ -125,12 +133,12 @@
 
 /*Raydium system flag*/
 #define RAYDIUM_INTERRUPT_FLAG     0x01
-#define RAYDIUM_BOOTLOADER_FLAG    0x02
+#define RAYDIUM_ENGINEER_MODE    0x02
 
 /* define display mode */
-#define ACTIVE_MODE	     0x00
-#define AMBIENT_MODE	 0x01
-#define SLEEP_MODE	     0x02
+#define ACTIVE_MODE     0x00
+#define AMBIENT_MODE    0x01
+#define SLEEP_MODE      0x02
 
 /* Enable sysfs */
 #define CONFIG_RM_SYSFS_DEBUG
@@ -138,10 +146,7 @@
 /* Gesture switch */
 #define GESTURE_EN
 
-#define TAP_WAKEUP	0x01
-#define GESTURE_C	0x02
-
-//#define MSM_NEW_VER
+#define MSM_NEW_VER
 
 #define PINCTRL_STATE_ACTIVE     "pmx_ts_active"
 #define PINCTRL_STATE_SUSPEND    "pmx_ts_suspend"

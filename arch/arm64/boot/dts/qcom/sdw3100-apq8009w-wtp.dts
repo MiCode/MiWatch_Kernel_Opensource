@@ -219,7 +219,7 @@
 		reg = <0x39>;
 		interrupt-parent = <&msm_gpio>;
 		interrupts = <98 0x2>;
-		vdd-supply = <&pm660_l18>;
+		//vdd-supply = <&pm660_l18>;
 		vcc-i2c-supply = <&pm660_l13>;
 		raydium,name = "raydium_ts";
 		raydium,irq-gpio = <&msm_gpio 98 0x02>;/**/
@@ -236,7 +236,7 @@
 		};
 
 //	/delete-node/ it7260@46;
-//	/delete-node/ synaptics@20;
+	/delete-node/ synaptics@20;
 };
 
 &spi_0 {
