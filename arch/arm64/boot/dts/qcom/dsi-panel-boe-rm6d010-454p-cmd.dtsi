@@ -52,7 +52,17 @@
 					23 01 00 00 00 00 02 08 72
 					23 01 00 00 00 00 02 FE 01
 					23 01 00 00 00 00 02 A2 01
+					23 01 00 00 00 00 02 FE 05
+					23 01 00 00 00 00 02 2A 02
+					23 01 00 00 00 00 02 30 10
+					23 01 00 00 00 00 02 05 43
+					23 01 00 00 00 00 02 FE 01
+					23 01 00 00 00 00 02 AE FC
+					23 01 00 00 00 00 02 AF 01
 					23 01 00 00 00 00 02 FE 00
+					23 01 00 00 00 00 02 35 00
+					23 01 00 00 00 00 02 FE 00
+					23 01 00 00 00 00 02 51 FF
 					13 01 00 00 64 00 02 11 00
 					13 01 00 00 24 00 02 29 00];
 		qcom,mdss-dsi-off-command = [05 01 00 00 32 00 02 28 00
@@ -62,8 +72,13 @@
 		qcom,mdss-dsi-idle-on-command = [23 01 00 00 00 00 02 FE 00
 										 13 01 00 00 00 00 01 39];/* Idle-Mode On */
 		qcom,mdss-dsi-idle-on-command-state = "dsi_hs_mode";
-		qcom,mdss-dsi-idle-off-command = [23 01 00 00 00 00 02 FE 00
-										  13 01 00 00 00 00 01 38];/* Idle-Mode Off */
+		qcom,mdss-dsi-idle-off-command = [23 01 00 00 00 00 02 FE 05
+										  23 01 00 00 00 00 02 2A 02
+										  23 01 00 00 00 00 02 30 10
+										  23 01 00 00 00 00 02 05 43
+										  23 01 00 00 00 00 02 FE 00
+										  13 01 00 00 00 00 01 38
+										  23 01 00 00 00 00 02 B0 04];/* Idle-Mode Off */
 		qcom,mdss-dsi-idle-off-command-state = "dsi_hs_mode";
 		qcom,mdss-dsi-h-sync-pulse = <0>;
 		qcom,mdss-dsi-traffic-mode = "burst_mode";
