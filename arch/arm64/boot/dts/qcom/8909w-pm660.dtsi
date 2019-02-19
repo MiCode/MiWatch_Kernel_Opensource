@@ -543,7 +543,7 @@
 	qcom,pbs-client = <&pm660_pbs>;
 };
 
-/ {
+/{
 	/delete-node/ qcom,battery-data;
 	mtp_batterydata: qcom,battery-data {
 		qcom,batt-id-range-pct = <15>;
