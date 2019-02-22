@@ -381,56 +381,57 @@
 
 &pm660_haptics {
 	qcom,actuator-type = "lra";
-	qcom,vmax-mv = <1800>;
-	qcom,ilim-ma = <100>;
+	qcom,vmax-mv = <2680>;
+	qcom,ilim-ma = <60>;
+	qcom,play-rate-us = <4180>;
 	qcom,lra-auto-resonance-mode = "qwd";
-	qcom,lra-resonance-sig-shape = "square";
-	qcom,play-rate-us = <100000>;
+	qcom,lra-resonance-sig-shape = "sine";
+	qcom,lra-allow-variable-play-rate;
 	wf_0 {
 		/* CLICK */
 		qcom,effect-id = <0>;
-		qcom,wf-vmax-mv = <1800>;
-		qcom,wf-pattern = [3e 3e 3e];
-		qcom,wf-brake-pattern = [01 00 00 00];
-		qcom,play-rate-us = <100000>;
+		qcom,wf-vmax-mv = <2680>;
+		qcom,wf-pattern = [7e 7e 7e 7e];
+		qcom,wf-brake-pattern = [02 01 01 01];
+		qcom,play-rate-us = <4180>;
 	};
 	wf_1 {
 		/* DOUBLE CLICK */
 		qcom,effect-id = <1>;
-		qcom,wf-vmax-mv = <1800>;
-		qcom,wf-pattern = [7e 7e 02 02 02 02 02 02];
-		qcom,wf-repeat-count = <2>;
-		qcom,wf-s-repeat-count = <1>;
-		qcom,play-rate-us = <100000>;
+		qcom,wf-vmax-mv = <2680>;
+		qcom,wf-pattern = [7e 7e 7e 02 02 02 02 02];
+		qcom,wf-repeat-count = <1>;
+		qcom,wf-s-repeat-count = <2>;
+		qcom,wf-play-rate-us = <4180>;
 	};
 	wf_2 {
 		/* TICK */
 		qcom,effect-id = <2>;
-		qcom,wf-vmax-mv = <1800>;
+		qcom,wf-vmax-mv = <2680>;
 		qcom,wf-pattern = [7e 7e];
-		qcom,wf-play-rate-us = <6667>;
-		qcom,play-rate-us = <100000>;
+		qcom,wf-brake-pattern = [02 01 01 01];
+		qcom,wf-play-rate-us = <4180>;
 	};
 	wf_3 {
 		/* THUD */
 		qcom,effect-id = <3>;
-		qcom,wf-vmax-mv = <1800>;
+		qcom,wf-vmax-mv = <2680>;
 		qcom,wf-pattern = [7e 7e 7e];
-		qcom,play-rate-us = <100000>;
+		qcom,wf-play-rate-us = <4180>;
 	};
 	wf_4 {
 		/* POP */
 		qcom,effect-id = <4>;
-		qcom,wf-vmax-mv = <1800>;
+		qcom,wf-vmax-mv = <2680>;
 		qcom,wf-pattern = [7e 7e];
-		qcom,play-rate-us = <100000>;
+		qcom,wf-play-rate-us = <4180>;
 	};
 	wf_5 {
 		/* HEAVY CLICK */
 		qcom,effect-id = <5>;
-		qcom,wf-vmax-mv = <1800>;
+		qcom,wf-vmax-mv = <2680>;
 		qcom,wf-pattern = [7e 7e 7e];
-		qcom,play-rate-us = <100000>;
+		qcom,wf-play-rate-us = <4180>;
 	};
 };
 
