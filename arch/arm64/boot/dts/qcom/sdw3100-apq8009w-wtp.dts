@@ -393,7 +393,7 @@
 		qcom,wf-vmax-mv = <2680>;
 		qcom,wf-pattern = [7e 7e 7e 7e];
 		qcom,wf-brake-pattern = [02 01 01 01];
-		qcom,play-rate-us = <4180>;
+		qcom,wf-play-rate-us = <4180>;
 	};
 	wf_1 {
 		/* DOUBLE CLICK */
