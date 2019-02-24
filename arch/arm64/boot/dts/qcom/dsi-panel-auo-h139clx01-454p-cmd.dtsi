@@ -11,8 +11,8 @@
  */
 
 &mdss_mdp {
-	dsi_boe_rm6d010_454p_cmd: qcom,mdss_dsi_boe_rm6d010_454p_cmd {
-		qcom,mdss-dsi-panel-name = "Boe RM6D010 454p cmd mode dsi panel";
+	dsi_auo_h139clx01_454p_cmd: qcom,mdss_dsi_auo_h139clx01_454p_cmd {
+		qcom,mdss-dsi-panel-name = "Auo H139CLX01 454p cmd mode dsi panel";
 		qcom,mdss-dsi-panel-type = "dsi_cmd_mode";
 		qcom,mdss-dsi-panel-framerate = <45>;
 		qcom,mdss-dsi-virtual-channel-id = <0>;
@@ -34,67 +34,33 @@
 		qcom,mdss-dsi-color-order = "rgb_swap_rgb";
 		qcom,mdss-dsi-underflow-color = <0xff>;
 		qcom,mdss-dsi-border-color = <0>;
-		qcom,mdss-dsi-on-command = [23 01 00 00 00 00 02 FE 00
-					23 01 00 00 00 00 02 35 00
-					39 01 00 00 00 00 05 2A 00 0C 01 D1
-					39 01 00 00 00 00 05 2B 00 00 01 C5
-					23 01 00 00 00 00 02 FE 01
-					23 01 00 00 00 00 02 D0 00
-					23 01 00 00 00 00 02 6A 4C
-					23 01 00 00 00 00 02 69 02
-					23 01 00 00 00 00 02 6B 1C
-					23 01 00 00 00 00 02 FE 0C
-					23 01 00 00 00 00 02 00 5B
-					23 01 00 00 00 00 02 01 5A
-					23 01 00 00 00 00 02 02 39
-					23 01 00 00 00 00 02 05 02
-					23 01 00 00 00 00 02 07 12
-					23 01 00 00 00 00 02 08 72
-					23 01 00 00 00 00 02 FE 01
-					23 01 00 00 00 00 02 A2 01
-					23 01 00 00 00 00 02 FE 05
-					23 01 00 00 00 00 02 2A 02
-					23 01 00 00 00 00 02 30 10
-					23 01 00 00 00 00 02 05 43
-					23 01 00 00 00 00 02 FE 01
-					23 01 00 00 00 00 02 AE FC
-					23 01 00 00 00 00 02 AF 01
-					23 01 00 00 00 00 02 FE 00
-					23 01 00 00 00 00 02 35 00
-					23 01 00 00 00 00 02 FE 00
-					23 01 00 00 00 00 02 51 FF
-					13 01 00 00 64 00 02 11 00
-					13 01 00 00 24 00 02 29 00];
-		qcom,mdss-dsi-off-command = [05 01 00 00 32 00 02 28 00
+		qcom,mdss-dsi-on-command = [15 01 00 00 00 00 02 FE 01
+					15 01 00 00 00 00 02 0A F0
+					15 01 00 00 00 00 02 FE 0A
+					15 01 00 00 00 00 02 29 92
+					15 01 00 00 00 00 02 FE 01
+					15 01 00 00 00 00 02 6D 10
+					15 01 00 00 00 00 02 FE 00
+					29 01 00 00 00 00 05 2A 00 0A 01 CF
+					29 01 00 00 00 00 05 2B 00 00 01 C5
+					29 01 00 00 00 00 05 30 00 00 01 C5
+					29 01 00 00 00 00 05 31 00 0A 01 CF
+					05 01 00 00 00 00 02 12 00
+					15 01 00 00 00 00 02 35 00
+					15 01 00 00 00 00 02 51 FF
+					15 01 00 00 00 00 02 53 20
+					05 01 00 00 96 00 02 11 00
+					05 01 00 00 00 00 02 29 00];
+		qcom,mdss-dsi-off-command = [05 01 00 00 00 00 02 28 00
 					05 01 00 00 78 00 02 10 00];
 		qcom,mdss-dsi-on-command-state = "dsi_lp_mode";
 		qcom,mdss-dsi-off-command-state = "dsi_lp_mode";
 		qcom,mdss-dsi-idle-on-command = [23 01 00 00 00 00 02 FE 00
 										 13 01 00 00 00 00 01 39];/* Idle-Mode On */
 		qcom,mdss-dsi-idle-on-command-state = "dsi_hs_mode";
-		qcom,mdss-dsi-idle-off-command = [23 01 00 00 00 00 02 FE 05
-										  23 01 00 00 00 00 02 2A 02
-										  23 01 00 00 00 00 02 30 10
-										  23 01 00 00 00 00 02 05 43
-										  23 01 00 00 00 00 02 FE 00
-										  13 01 00 00 00 00 01 38
-										  23 01 00 00 00 00 02 B0 04];/* Idle-Mode Off */
+		qcom,mdss-dsi-idle-off-command = [23 01 00 00 00 00 02 FE 00
+										  13 01 00 00 00 00 01 38];/* Idle-Mode Off */
 		qcom,mdss-dsi-idle-off-command-state = "dsi_hs_mode";
-		qcom,mdss-dsi-hbm-on-command = [23 01 00 00 00 00 02 FE 00
-										23 01 00 00 00 00 02 B0 06
-										23 01 00 00 00 00 02 FE 05
-										23 01 00 00 00 00 02 2A 02
-										23 01 00 00 00 00 02 30 16
-										23 01 00 00 00 00 02 05 3A
-										23 01 00 00 00 00 02 FE 00];/* hbm On */
-		qcom,mdss-dsi-hbm-on-command-state = "dsi_hs_mode";
-		qcom,mdss-dsi-hbm-off-command = [23 01 00 00 00 00 02 FE 05
-										 23 01 00 00 00 00 02 2A 02
-										 23 01 00 00 00 00 02 30 10
-										 23 01 00 00 00 00 02 05 43
-										 23 01 00 00 00 00 02 FE 00
-										 23 01 00 00 00 00 02 B0 04];/* hbm Off */
-		qcom,mdss-dsi-hbm-off-command-state = "dsi_hs_mode";
 		qcom,mdss-dsi-h-sync-pulse = <0>;
 		qcom,mdss-dsi-traffic-mode = "burst_mode";
 		qcom,mdss-dsi-bllp-eof-power-mode;
@@ -112,7 +78,7 @@
 		qcom,mdss-dsi-dma-trigger = "trigger_sw";
 		qcom,mdss-dsi-mdp-trigger = "none";
 		qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_dcs";
-		qcom,mdss-dsi-reset-sequence = <1 10>, <0 10>, <1 120>;
+		qcom,mdss-dsi-reset-sequence = <1 20>, <1 2>, <1 20>;
 		/* clk = totalH * totalV * bpp * 60fps */
 		qcom,mdss-dsi-panel-clockrate = <302060160>;
 		qcom,mdss-pan-physical-width-dimension = <36>;
