@@ -378,8 +378,19 @@
 
 &mdss_dsi0 {
 	qcom,dsi-pref-prim-pan = <&dsi_auo_h139clx01_454p_cmd>;
-	qcom,platform-bklight-en-gpio = <&msm_gpio 52 0>;
-	qcom,platform-enable-gpio = <&msm_gpio 59 0>;
+	//qcom,platform-bklight-en-gpio = <&msm_gpio 52 0>;
+	//qcom,platform-enable-gpio = <&msm_gpio 59 0>;
+};
+
+&dsi_edo_h162_320p_cmd {
+	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_dcs";
+	qcom,panel-supply-entries = <&dsi_pm660_panel_pwr_supply>;
+};
+
+&mdss_dsi0 {
+	qcom,dsi-pref-prim-pan = <&dsi_edo_h162_320p_cmd>;
+	//qcom,platform-bklight-en-gpio = <&msm_gpio 52 0>;
+	//qcom,platform-enable-gpio = <&msm_gpio 59 0>;
 };
 
 &mdss_dsi0 {
