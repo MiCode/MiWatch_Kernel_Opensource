@@ -274,7 +274,7 @@
 
 				cy,inp_dev_name = "cyttsp5_mt";
 				/* CY_MT_FLAG_FLIP | CY_MT_FLAG_INV_X | CY_MT_FLAG_INV_Y */
-				cy,flags = <0x38>;
+				cy,flags = <0x08>;
 				cy,abs =
 					/* ABS_MT_POSITION_X, CY_ABS_MIN_X, CY_ABS_MAX_X, 0, 0 */
 					<0x35 0 880 0 0
