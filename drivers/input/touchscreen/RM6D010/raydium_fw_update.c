@@ -1455,6 +1455,7 @@ int raydium_fw_update_check(struct raydium_ts_data *ts,
 #endif
 	mutex_lock(&ts->lock);
 	i32_ret = raydium_i2c_pda2_set_page(ts->client,
+                    ts->is_suspend,
 					RAYDIUM_PDA2_PAGE_0);
 	if (i32_ret < 0)
 		goto exit_error;
@@ -1506,6 +1507,7 @@ int raydium_fw_update_check(struct raydium_ts_data *ts,
 		raydium_irq_control(ts, ENABLE);
 		mutex_lock(&ts->lock);
 		i32_ret = raydium_i2c_pda2_set_page(ts->client,
+                        ts->is_suspend,
 						RAYDIUM_PDA2_PAGE_0);
 		if (i32_ret < 0)
 			goto exit_error;

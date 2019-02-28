@@ -28,7 +28,7 @@ static ssize_t raydium_touch_calibration_show(struct device *dev,
 	raydium_irq_control(ts, DISABLE);
 	mutex_lock(&ts->lock);
 
-	i32_ret = raydium_i2c_pda2_set_page(client, RAYDIUM_PDA2_PAGE_0);
+	i32_ret = raydium_i2c_pda2_set_page(client, ts->is_suspend, RAYDIUM_PDA2_PAGE_0);
 	if (i32_ret < 0)
 		goto exit_i2c_error;
 
@@ -108,7 +108,7 @@ static ssize_t raydium_check_i2c_show(struct device *dev,
 	mutex_lock(&ts->lock);
 
 	if (g_u8_i2c_mode == PDA2_MODE) {
-		i32_ret = raydium_i2c_pda2_set_page(client, RAYDIUM_PDA2_PAGE_0);
+		i32_ret = raydium_i2c_pda2_set_page(client, ts->is_suspend, RAYDIUM_PDA2_PAGE_0);
 		if (i32_ret < 0)
 			goto exit_i2c_error;
 
@@ -122,6 +122,7 @@ static ssize_t raydium_check_i2c_show(struct device *dev,
 		if (i32_ret < 0)
 			goto exit_i2c_error;
 		i32_ret = raydium_i2c_pda2_set_page(client,
+                        ts->is_suspend,
 						RAYDIUM_PDA2_ENABLE_PDA);
 		if (i32_ret < 0)
 			goto exit_i2c_error;
@@ -296,7 +297,7 @@ static ssize_t raydium_touch_lock_store(struct device *dev,
 
 		if (ts->is_sleep == 1)
 			break;
-		i32_ret = raydium_i2c_pda2_set_page(client, RAYDIUM_PDA2_PAGE_0);
+		i32_ret = raydium_i2c_pda2_set_page(client, ts->is_suspend, RAYDIUM_PDA2_PAGE_0);
 		if (i32_ret < 0)
 			goto exit_i2c_error;
 		u8_wbuffer[0] = RAYDIUM_HOST_CMD_PWR_SLEEP;/*fw enter sleep mode*/
@@ -348,7 +349,7 @@ static ssize_t raydium_check_fw_version_show(struct device *dev,
 	raydium_irq_control(ts, DISABLE);
 	mutex_lock(&ts->lock);
 
-	i32_ret = raydium_i2c_pda2_set_page(client, RAYDIUM_PDA2_PAGE_0);
+	i32_ret = raydium_i2c_pda2_set_page(client, ts->is_suspend, RAYDIUM_PDA2_PAGE_0);
 	if (i32_ret < 0)
 		goto exit_i2c_error;
 	i32_ret = raydium_i2c_pda2_read(client, RAYDIUM_PDA2_FW_VERSION_ADDR,
@@ -403,7 +404,7 @@ static ssize_t raydium_check_panel_version_show(struct device *dev,
 	raydium_irq_control(ts, DISABLE);
 	mutex_lock(&ts->lock);
 
-	i32_ret = raydium_i2c_pda2_set_page(client, RAYDIUM_PDA2_PAGE_0);
+	i32_ret = raydium_i2c_pda2_set_page(client, ts->is_suspend, RAYDIUM_PDA2_PAGE_0);
 	if (i32_ret < 0)
 		goto exit_i2c_error;
 	i32_ret = raydium_i2c_pda2_read(client, RAYDIUM_PDA2_PANEL_VERSION_ADDR,
@@ -548,7 +549,7 @@ static ssize_t raydium_i2c_pda2_page_store(struct device *dev,
 	raydium_irq_control(ts, DISABLE);
 	mutex_lock(&ts->lock);
 
-	i32_ret = raydium_i2c_pda2_set_page(client, u8_page);
+	i32_ret = raydium_i2c_pda2_set_page(client, ts->is_suspend, u8_page);
 	if (i32_ret < 0)
 		goto exit_set_error;
 
@@ -654,7 +655,7 @@ static ssize_t raydium_i2c_raw_data_store(struct device *dev,
 	memset(u8_w_data, 0x00, RAYDIUM_FT_CMD_LENGTH);
 
 	mutex_lock(&ts->lock);
-	i32_ret = raydium_i2c_pda2_set_page(client, RAYDIUM_PDA2_PAGE_0);
+	i32_ret = raydium_i2c_pda2_set_page(client, ts->is_suspend, RAYDIUM_PDA2_PAGE_0);
 	if (i32_ret < 0) {
 		mutex_unlock(&ts->lock);
 		goto exit_error;
@@ -707,7 +708,7 @@ static ssize_t raydium_i2c_raw_data_show(struct device *dev,
 	/* make sure update flag was set*/
 	for (i32_retry = 0; i32_retry < SYN_I2C_RETRY_TIMES; i32_retry++) {
 		mutex_lock(&ts->lock);
-		i32_ret = raydium_i2c_pda2_set_page(client, RAYDIUM_PDA2_PAGE_0);
+		i32_ret = raydium_i2c_pda2_set_page(client, ts->is_suspend, RAYDIUM_PDA2_PAGE_0);
 		if (i32_ret < 0)
 			goto exit_i2c_error;
 
@@ -742,7 +743,7 @@ static ssize_t raydium_i2c_raw_data_show(struct device *dev,
 		u32_target_addr = RAD_READ_FT_DATA_CMD + u32_offset;
 
 		mutex_lock(&(ts->lock));
-		i32_ret = raydium_i2c_pda2_set_page(client, RAYDIUM_PDA2_PAGE_0);
+		i32_ret = raydium_i2c_pda2_set_page(client, ts->is_suspend, RAYDIUM_PDA2_PAGE_0);
 		if (i32_ret < 0)
 			goto exit_i2c_error;
 
@@ -756,6 +757,7 @@ static ssize_t raydium_i2c_raw_data_show(struct device *dev,
 			goto exit_i2c_error;
 
 		i32_ret = raydium_i2c_pda2_set_page(client,
+                ts->is_suspend,
 				RAYDIUM_PDA2_ENABLE_PDA);
 		if (i32_ret < 0)
 			goto exit_i2c_error;

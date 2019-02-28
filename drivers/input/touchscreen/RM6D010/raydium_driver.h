@@ -14,9 +14,6 @@
 #define RAYDIUM_RESET_RESTORE_USEC    200
 #define RAYDIUM_RESET_DELAY_MSEC      100
 
-/*lihongshuai@*/
-#define RAYDIUM_CONFIG_FB
-#define RAYDIUM_CONFIG_OF
 /* I2C bus slave address(ID) */
 #define RAYDIUM_I2C_EID    (0x5A)
 #define RAYDIUM_I2C_NID    (0x39)
@@ -194,7 +191,7 @@ struct raydium_ts_data {
 	bool irq_enabled;
 	bool irq_wake;
 
-#if defined(RAYDIUM_CONFIG_FB)
+#if defined(CONFIG_FB)
 	struct notifier_block fb_notif;
 	int blank;
 #elif defined(CONFIG_HAS_EARLYSUSPEND)
@@ -292,7 +289,8 @@ extern int raydium_i2c_pda2_write(struct i2c_client *client,
 				  unsigned char u8_addr, unsigned char *u8_w_data,
 				  unsigned short u16_length);
 extern int raydium_i2c_pda2_set_page(struct i2c_client *client,
-				     unsigned char u8_page);
+                    unsigned int is_suspend,
+				    unsigned char u8_page);
 extern unsigned char raydium_selftest_stop_mcu(struct i2c_client *client);
 extern int raydium_burn_comp(struct i2c_client *client);
 extern int raydium_burn_fw(struct i2c_client *client);

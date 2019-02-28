@@ -37,7 +37,7 @@
 #include <linux/of_gpio.h>
 #include "raydium_driver.h"
 
-#if defined(RAYDIUM_CONFIG_FB)
+#if defined(CONFIG_FB)
 #include <linux/notifier.h>
 #include <linux/fb.h>
 #elif defined(CONFIG_HAS_EARLYSUSPEND)
@@ -348,10 +348,12 @@ exit:
 }
 
 int raydium_i2c_pda2_set_page(struct i2c_client *client,
-				     unsigned char u8_page)
+					unsigned int is_suspend,
+					unsigned char u8_page)
 {
 	int i32_ret = -1;
 	unsigned char u8_retry;
+    unsigned int u8_ret = (is_suspend) ? 10:2;
 	unsigned char u8_buf[RAYDIUM_I2C_PDA2_PAGE_LENGTH];
 
 	struct i2c_msg msg[] = {
@@ -365,16 +367,21 @@ int raydium_i2c_pda2_set_page(struct i2c_client *client,
 
 	u8_buf[0] = RAYDIUM_PDA2_PAGE_ADDR;
 	u8_buf[1] = u8_page;
-
-	for (u8_retry = 0; u8_retry < SYN_I2C_RETRY_TIMES; u8_retry++) {
-		if (i2c_transfer(client->adapter, msg, 1) == 1) {
-			i32_ret = RAYDIUM_I2C_PDA2_PAGE_LENGTH;
-			break;
-		}
-		usleep_range(500, 1500);
+	for ( ; u8_ret > 0; u8_ret--) {
+		for (u8_retry = 0; u8_retry < SYN_I2C_RETRY_TIMES; u8_retry++) {
+			if (i2c_transfer(client->adapter, msg, 1) == 1) {
+				i32_ret = RAYDIUM_I2C_PDA2_PAGE_LENGTH;
+				break;
+			}
+			usleep_range(500, 1500);
+        }
+        if(i32_ret == RAYDIUM_I2C_PDA2_PAGE_LENGTH){
+            break;
+        }
+        usleep_range(2000,5000);
 	}
 
-	if (u8_retry == SYN_I2C_RETRY_TIMES) {
+	if (0 == u8_ret ) {
 		pr_err("[touch]%s: I2C write over retry limit\n", __func__);
 		i32_ret = -EIO;
 	}
@@ -476,6 +483,7 @@ void raydium_irq_control(struct raydium_ts_data *ts, bool enable)
 		if (ts->blank != FB_BLANK_POWERDOWN) {
 			mutex_lock(&ts->lock);
 			if (raydium_i2c_pda2_set_page(ts->client,
+							  ts->is_suspend,
 						      RAYDIUM_PDA2_PAGE_0) < 0)
 				pr_err("[touch]failed to set page %s\n", __func__);
 			mutex_unlock(&ts->lock);
@@ -529,7 +537,7 @@ int raydium_i2c_mode_control(struct i2c_client *client,
 		pr_info("[touch]RAD INT depth : %d\n", ts->irq_desc->depth);
 		break;
 	case 7:
-		raydium_i2c_pda2_set_page(client, RAYDIUM_PDA2_2_PDA);
+		raydium_i2c_pda2_set_page(client, ts->is_suspend , RAYDIUM_PDA2_2_PDA);
 		g_u8_i2c_mode = PDA_MODE;
 		pr_info("[touch]Disable PDA2_MODE;\n");
 		break;
@@ -841,7 +849,7 @@ int raydium_read_touchdata(struct raydium_ts_data *ts,
 	static unsigned char u8_seq_no;
 
 	mutex_lock(&ts->lock);
-	i32_ret = raydium_i2c_pda2_set_page(ts->client, RAYDIUM_PDA2_PAGE_0);
+	i32_ret = raydium_i2c_pda2_set_page(ts->client, ts->is_suspend, RAYDIUM_PDA2_PAGE_0);
 	if (i32_ret < 0) {
 		pr_err("[touch]%s: set page failed, %d\n", __func__, i32_ret);
 		mutex_unlock(&ts->lock);
@@ -992,7 +1000,7 @@ static irqreturn_t raydium_ts_interrupt(int irq, void *dev_id)
 		if (!work_pending(&ts->work)) {
 			/* Clear interrupts*/
 		    	mutex_lock(&ts->lock);
-		    	if (raydium_i2c_pda2_set_page(ts->client, RAYDIUM_PDA2_PAGE_0) < 0) {
+                if (raydium_i2c_pda2_set_page(ts->client, ts->is_suspend, RAYDIUM_PDA2_PAGE_0) < 0) {
 		          	pr_err("[touch]%s: failed to set page ontime\n", __func__);
                     mutex_unlock(&ts->lock);
 	                return IRQ_HANDLED;
@@ -1022,7 +1030,8 @@ static irqreturn_t raydium_ts_interrupt(int irq, void *dev_id)
 			/*work pending*/
 				mutex_lock(&ts->lock);
 				if (raydium_i2c_pda2_set_page(ts->client,
-						     RAYDIUM_PDA2_PAGE_0) < 0) {
+					ts->is_suspend,
+					RAYDIUM_PDA2_PAGE_0) < 0) {
 
 					pr_err("[touch]%s: failed to set page in work_pending\n",
 			     		__func__);
@@ -1045,6 +1054,7 @@ static int raydium_check_i2c_ready(struct raydium_ts_data *ts,
 
 	if (g_u8_i2c_mode == PDA2_MODE) {
 		i32_ret = raydium_i2c_pda2_set_page(ts->client,
+				ts->is_suspend,
 				RAYDIUM_PDA2_PAGE_0);
 		if (i32_ret < 0)
 			goto exit_error;
@@ -1061,6 +1071,7 @@ static int raydium_check_i2c_ready(struct raydium_ts_data *ts,
 			goto exit_error;
 
 		i32_ret = raydium_i2c_pda2_set_page(ts->client,
+						ts->is_suspend,
 						RAYDIUM_PDA2_ENABLE_PDA);
 		if (i32_ret < 0)
 			goto exit_error;
@@ -1144,7 +1155,7 @@ static void raydium_ts_do_resume(struct raydium_ts_data *ts)
 
 	/* clear interrupts*/
 	mutex_lock(&ts->lock);
-	if (raydium_i2c_pda2_set_page(ts->client, RAYDIUM_PDA2_PAGE_0) < 0){
+	if (raydium_i2c_pda2_set_page(ts->client, ts->is_suspend, RAYDIUM_PDA2_PAGE_0) < 0){
 		pr_err("[ raydium ]%s: failed to set page\n", __func__);
         mutex_unlock(&ts->lock);
         return;
@@ -1186,7 +1197,7 @@ static int raydium_ts_resume(struct device *dev)
 }
 
 static const struct dev_pm_ops raydium_ts_pm_ops = {
-#if (!defined(RAYDIUM_CONFIG_FB) && !defined(CONFIG_HAS_EARLYSUSPEND))
+#if (!defined(CONFIG_FB) && !defined(CONFIG_HAS_EARLYSUSPEND))
 	.suspend    = raydium_ts_suspend,
 	.resume        = raydium_ts_resume,
 #endif /*end of CONFIG_PM*/
@@ -1196,9 +1207,7 @@ static const struct dev_pm_ops raydium_ts_pm_ops = {
 static int raydium_ts_open(struct input_dev *input_dev)
 {
 	int i32_ret = 0;
-/*
 	struct raydium_ts_data *ts;
-
 
 	ts = input_get_drvdata(input_dev);
 
@@ -1228,66 +1237,69 @@ static int raydium_ts_open(struct input_dev *input_dev)
 		pr_info("[touch]disable touch lock.\n");
 	}
 
-*/
 	return i32_ret;
 }
 
 static void raydium_ts_close(struct input_dev *input_dev)
 {
-/*
-	struct raydium_ts_data *ts;
-	int i32_ret = 0;
-	unsigned char u8_i = 0;
-	unsigned char u8_wbuffer[1];
+    struct raydium_ts_data *ts;
+    int i32_ret = 0;
+    unsigned char u8_i = 0;
+    unsigned char u8_wbuffer[1];
+    unsigned char buf[4];
 
-	ts = input_get_drvdata(input_dev);
-	pr_info("[touch]%s()+\n", __func__);
+    ts = input_get_drvdata(input_dev);
+    pr_info("[touch]%s()+\n", __func__);
 
-	if (ts->is_sleep == 1) {
-		pr_info("[touch]touch lock already enabled.\n");
-		return;
-	}
+    if (ts->is_sleep == 1) {
+        pr_info("[touch]touch lock already enabled.\n");
+        return;
+    }
 
-	raydium_irq_control(ts, DISABLE);
+    raydium_irq_control(ts, DISABLE);
 
+    for (u8_i = 0; u8_i < ts->u8_max_touchs; u8_i++) {
+        input_mt_slot(ts->input_dev, u8_i);
+        input_mt_report_slot_state(ts->input_dev,
+                MT_TOOL_FINGER,
+                false);
+    }
+    input_mt_report_pointer_emulation(ts->input_dev, false);
+    input_sync(ts->input_dev);
+    mutex_lock(&ts->lock);
+    i32_ret = raydium_i2c_pda2_set_page(ts->client, ts->is_suspend, RAYDIUM_PDA2_PAGE_0);
+    if (i32_ret < 0) {
+        pr_err("[touch]ret:%d\n", i32_ret);
+        goto exit_i2c_error;
+    }
+    u8_wbuffer[0] = RAYDIUM_HOST_CMD_PWR_SLEEP;
+    i32_ret = raydium_i2c_pda2_write(ts->client,
+            RAYDIUM_PDA2_HOST_CMD_ADDR,
+            u8_wbuffer,
+            1);
+    if (i32_ret < 0) {
+        pr_err("[touch]ret:%d\n", i32_ret);
+        goto exit_i2c_error;
+    }
 
-	for (u8_i = 0; u8_i < ts->u8_max_touchs; u8_i++) {
-		input_mt_slot(ts->input_dev, u8_i);
-		input_mt_report_slot_state(ts->input_dev,
-					   MT_TOOL_FINGER,
-					   false);
-	}
-	input_mt_report_pointer_emulation(ts->input_dev, false);
-	input_sync(ts->input_dev);
+    mdelay(750);
+    memset(buf, 0, sizeof(buf));
+    i32_ret = raydium_i2c_pda_write(ts->client, 0x5000000C, buf, 4);
+    if (i32_ret < 0)
+    {
+        printk(KERN_ERR "[touch]Disable M0 NG ret:%d\n",i32_ret);
+        goto exit_i2c_error;
+    }
 
-	mutex_lock(&ts->lock);
-	i32_ret = raydium_i2c_pda2_set_page(ts->client, RAYDIUM_PDA2_PAGE_0);
-	if (i32_ret < 0) {
-		pr_err("[touch]ret:%d\n", i32_ret);
-		goto exit_i2c_error;
-	}
-
-	u8_wbuffer[0] = RAYDIUM_HOST_CMD_PWR_SLEEP;
-	i32_ret = raydium_i2c_pda2_write(ts->client,
-				     RAYDIUM_PDA2_HOST_CMD_ADDR,
-				     u8_wbuffer,
-				     1);
-	if (i32_ret < 0) {
-		pr_err("[touch]ret:%d\n", i32_ret);
-		goto exit_i2c_error;
-	}
-
-	mutex_unlock(&ts->lock);
-
-	ts->is_sleep = 1;
-	pr_info("[touch]enable touch lock.\n");
-	return;
+    mutex_unlock(&ts->lock);
+    ts->is_sleep = 1;
+    pr_info("[touch]enable touch lock.\n");
+    return;
 
 exit_i2c_error:
-	mutex_unlock(&ts->lock);
-	raydium_irq_control(ts, ENABLE);
-	return;
-*/
+    mutex_unlock(&ts->lock);
+    raydium_irq_control(ts, ENABLE);
+    return;
 }
 
 #else
@@ -1300,9 +1312,9 @@ static int raydium_ts_resume(struct device *dev)
 {
 	return 0;
 }
-#endif /*end of RAYDIUM_CONFIG_FB*/
+#endif /*end of CONFIG_FB*/
 
-#if defined(RAYDIUM_CONFIG_FB)
+#if defined(CONFIG_FB)
 static int fb_notifier_callback(struct notifier_block *self,
 				unsigned long event,
 				void *data)
@@ -1396,9 +1408,9 @@ static void raydium_ts_late_resume(struct early_suspend *handler)
 
 	raydium_ts_do_resume(ts);
 }
-#endif /*end of RAYDIUM_CONFIG_FB*/
+#endif /*end of CONFIG_FB*/
 
-#ifdef  RAYDIUM_CONFIG_OF
+#ifdef  CONFIG_OF
 static int raydium_get_dt_coords(struct device *dev, char *name,
 				 struct raydium_ts_platform_data *pdata)
 {
@@ -1502,7 +1514,7 @@ static int raydium_parse_dt(struct device *dev,
 {
 	return -ENODEV;
 }
-#endif /*end of RAYDIUM_CONFIG_OF*/
+#endif /*end of CONFIG_OF*/
 
 static void raydium_input_set(struct input_dev *input_dev,
 			      struct raydium_ts_data *ts)
@@ -1549,6 +1561,7 @@ static int raydium_set_resolution(struct raydium_ts_data *ts)
 	mutex_lock(&ts->lock);
 
 	i32_ret = raydium_i2c_pda2_set_page(ts->client,
+			ts->is_suspend,
 			RAYDIUM_PDA2_PAGE_0);
 	if (i32_ret < 0)
 		goto exit_error;
@@ -1727,7 +1740,7 @@ static int raydium_ts_probe(struct i2c_client *client,
 #endif
 
 	/*suspend/resume routine*/
-#if defined(RAYDIUM_CONFIG_FB)
+#if defined(CONFIG_FB)
 	raydium_register_notifier(ts);
 #elif defined(CONFIG_HAS_EARLYSUSPEND)
 	/*Early-suspend level*/
@@ -1777,7 +1790,7 @@ static int raydium_ts_probe(struct i2c_client *client,
 	return 0;
 
 exit_irq_request_failed:
-#if defined(RAYDIUM_CONFIG_FB)
+#if defined(CONFIG_FB)
 	raydium_unregister_notifier(ts);
 #endif/*end of CONFIG_FB*/
 
@@ -1821,11 +1834,11 @@ static int raydium_ts_remove(struct i2c_client *client)
 	struct raydium_ts_data *ts;
 	ts = i2c_get_clientdata(client);
 
-#if defined(RAYDIUM_CONFIG_FB)
+#if defined(CONFIG_FB)
 	raydium_unregister_notifier(ts);
 #elif defined(CONFIG_HAS_EARLYSUSPEND)
 	unregister_early_suspend(&ts->early_suspend);
-#endif/*end of RAYDIUM_CONFIG_FB*/
+#endif/*end of CONFIG_FB*/
 	input_unregister_device(ts->input_dev);
 	input_free_device(ts->input_dev);
 	gpio_free(ts->rst_gpio);
@@ -1859,7 +1872,7 @@ static const struct i2c_device_id raydium_ts_id[] = {
 
 MODULE_DEVICE_TABLE(i2c, raydium_ts_id);
 
-#ifdef RAYDIUM_CONFIG_OF
+#ifdef CONFIG_OF
 static struct of_device_id raydium_match_table[] = {
 	{ .compatible = "raydium,raydium-ts",},
 	{ },
