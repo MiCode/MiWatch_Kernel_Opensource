@@ -940,8 +940,6 @@ static void raydium_work_handler(struct work_struct *work)
 				input_mt_report_pointer_emulation(ts->input_dev, false);
 				input_report_key(ts->input_dev, KEY_SLEEP, true); //press sleep key
 				input_sync(ts->input_dev);
-				
-
 
 				pr_info("[touch]palm_status = %d.\n",
 					 u8_tp_status[POS_GESTURE_STATUS]);
@@ -962,20 +960,22 @@ static void raydium_work_handler(struct work_struct *work)
 	} else if (ts->blank == FB_BLANK_VSYNC_SUSPEND ||
 			ts->blank == FB_BLANK_POWERDOWN) {
 		/*need check small area*/
-		input_mt_slot(ts->input_dev, 0);
-		input_mt_report_slot_state(ts->input_dev,
-			MT_TOOL_FINGER, 1);
-		input_report_abs(ts->input_dev, ABS_MT_POSITION_X, 100);
-		input_report_abs(ts->input_dev, ABS_MT_POSITION_Y, 100);
-		input_sync(ts->input_dev);
-		mdelay(10);
-		input_mt_slot(ts->input_dev, 0);
-		input_mt_report_slot_state(ts->input_dev,
-			MT_TOOL_FINGER, 0);
-		input_mt_report_pointer_emulation(ts->input_dev, false);
-		input_sync(ts->input_dev);
-		pr_info("[touch]display wake up\n");
-		/*goto exit;*/
+		//if (u8_tp_status[0] == RAD_WAKE_UP) {
+			input_mt_slot(ts->input_dev, 0);
+			input_mt_report_slot_state(ts->input_dev,
+				MT_TOOL_FINGER, 1);
+			input_report_abs(ts->input_dev, ABS_MT_POSITION_X, 100);
+			input_report_abs(ts->input_dev, ABS_MT_POSITION_Y, 100);
+			input_sync(ts->input_dev);
+			mdelay(10);
+			input_mt_slot(ts->input_dev, 0);
+			input_mt_report_slot_state(ts->input_dev,
+				MT_TOOL_FINGER, 0);
+			input_mt_report_pointer_emulation(ts->input_dev, false);
+			input_sync(ts->input_dev);
+			pr_info("[touch]display wake up\n");
+			/*goto exit;*/
+		//}
 	}
 #endif
 
@@ -1619,7 +1619,7 @@ static int raydium_ts_probe(struct i2c_client *client,
 		pdata = client->dev.platform_data;
 
 
-	pr_info("[touch]probe\n");
+	pr_info("[touch]new probe\n");
 
 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
 		ret = -ENODEV;
@@ -1772,10 +1772,11 @@ static int raydium_ts_probe(struct i2c_client *client,
 	}
 
 	ts->irq_desc = irq_to_desc(ts->irq);
+	ts->irq_enabled = true;
 
 	/*disable_irq then enable_irq for avoid Unbalanced enable for IRQ */
 
-	raydium_irq_control(ts, ENABLE);
+	/*raydium_irq_control(ts, ENABLE);*/
 
 	pr_info("[touch]RAD Touch driver ver :0x%04X\n", RAYDIUM_VER);
 
