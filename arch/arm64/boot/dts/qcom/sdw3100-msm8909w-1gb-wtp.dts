@@ -451,6 +451,51 @@
 	};
 };
 
+&pm660_haptics {
+	qcom,vmax-mv = <2700>;
+	qcom,ilim-ma = <90>;
+	wf_0 {
+		/* CLICK */
+		qcom,effect-id = <0>;
+		qcom,wf-vmax-mv = <2700>;
+		qcom,wf-pattern = [3e 3e 3e];
+		qcom,wf-brake-pattern = [01 00 00 00];
+	};
+	wf_1 {
+		/* DOUBLE CLICK */
+		qcom,effect-id = <1>;
+		qcom,wf-vmax-mv = <2700>;
+		qcom,wf-pattern = [7e 7e 02 02 02 02 02 02];
+		qcom,wf-repeat-count = <2>;
+		qcom,wf-s-repeat-count = <1>;
+	};
+	wf_2 {
+		/* TICK */
+		qcom,effect-id = <2>;
+		qcom,wf-vmax-mv = <2700>;
+		qcom,wf-pattern = [7e 7e];
+	};
+	wf_3 {
+		/* THUD */
+		qcom,effect-id = <3>;
+		qcom,wf-vmax-mv = <2700>;
+		qcom,wf-pattern = [7e 7e 7e];
+	};
+	wf_4 {
+		/* POP */
+		qcom,effect-id = <4>;
+		qcom,wf-vmax-mv = <2700>;
+		qcom,wf-pattern = [7e 7e];
+	};
+	wf_5 {
+		/* HEAVY CLICK */
+		qcom,effect-id = <5>;
+		qcom,wf-vmax-mv = <2700>;
+		qcom,wf-pattern = [7e 7e 7e];
+		qcom,wf-play-rate-us = <6667>;
+	};
+};
+
 &dsi_boe_rm6d010_454p_cmd {
 	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_dcs";
 	qcom,panel-supply-entries = <&dsi_pm660_panel_pwr_supply>;
