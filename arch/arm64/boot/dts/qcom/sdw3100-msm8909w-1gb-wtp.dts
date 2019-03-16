@@ -218,6 +218,7 @@
 
 &i2c_5 {
 		status = "okay";
+		clock-frequency = <400000>;
 		raydium@39 {
 		compatible = "raydium,raydium-ts";
 		reg = <0x39>;

@@ -40,14 +40,14 @@
 
 /* PDA literal */
 #define MASK_8BIT    0xFF
-#define RAYDIUM_I2C_PDA_ADDRESS_LENGTH    4
+#define RAD_I2C_PDA_ADDRESS_LENGTH    4
 #define PDA_MODE     1
 #define PDA2_MODE    2
-#define RAYDIUM_I2C_PDA_MODE_DISABLE      0x00
-#define RAYDIUM_I2C_PDA_MODE_ENABLE       0x80
+#define RAD_I2C_PDA_MODE_DISABLE      0x00
+#define RAD_I2C_PDA_MODE_ENABLE       0x80
 /* Using byte mode due to data might be not word-aligment */
-#define RAYDIUM_I2C_PDA_MODE_WORD_MODE    0x40
-#define RAYDIUM_I2C_PDA_2_MODE_DISABLE    0x20
+#define RAD_I2C_PDA_MODE_WORD_MODE    0x40
+#define RAD_I2C_PDA_2_MODE_DISABLE    0x20
 #define RAD_PALM_DISABLE    0x00
 #define RAD_PALM_ENABLE     0x01
 #define RAD_WAKE_UP			0x02
@@ -121,7 +121,7 @@
 #define RAD_INIT_2X_SIZE		0x200
 #define RAD_FW_2X_SIZE			0x6200
 #define RAD_PARA_2X_SIZE		0x15C
-#define RAD_TESTFW_2X_SIZE		RAD_FW_2X_SIZE + RAD_PARA_2X_SIZE + 4
+#define RAD_TESTFW_2X_SIZE		(RAD_FW_2X_SIZE + RAD_PARA_2X_SIZE + 4)
 
 #define RAD_CMD_UPDATE_BIN		0x80
 #define RAD_CMD_UPDATE_END		0x81
@@ -148,7 +148,7 @@
 #define CONFIG_RM_SYSFS_DEBUG
 
 /* Gesture switch */
- #define GESTURE_EN 
+#define GESTURE_EN
 
 /* Enable FW update */
 #define FW_UPDATE_EN
@@ -239,7 +239,7 @@ struct raydium_ts_platform_data {
 enum raydium_pt_report_status {
 	POS_SEQ = 0,/*1:touch, 0:no touch*/
 	POS_PT_AMOUNT,
-	POS_GESTURE_STATUS,
+	POS_GES_STATUS,
 };
 
 enum raydium_pt_report_idx {
@@ -263,7 +263,8 @@ extern void raydium_mem_table_setting(unsigned short u16_id);
 extern int wait_fw_state(struct i2c_client *client, unsigned int u32_addr,
 			 unsigned int u32_state, unsigned long u32_delay_us,
 			 unsigned short u16_retry);
-extern int wait_irq_state(struct i2c_client *client, unsigned int u32_retry_time,
+extern int wait_irq_state(struct i2c_client *client,
+				unsigned int u32_retry_time,
 				unsigned int u32_delay_us);
 extern void raydium_irq_control(struct raydium_ts_data *ts, bool enable);
 extern unsigned char i2c_burst_read(struct i2c_client *client,
@@ -283,14 +284,16 @@ extern int raydium_i2c_pda_write(struct i2c_client *client,
 			unsigned int u32_addr, unsigned char *u8_w_data,
 			unsigned short u16_length);
 extern int raydium_i2c_pda2_read(struct i2c_client *client,
-				 unsigned char u8_addr, unsigned char *u8_r_data,
+				 unsigned char u8_addr,
+				 unsigned char *u8_r_data,
 				 unsigned short u16_length);
 extern int raydium_i2c_pda2_write(struct i2c_client *client,
-				  unsigned char u8_addr, unsigned char *u8_w_data,
+				  unsigned char u8_addr,
+				  unsigned char *u8_w_data,
 				  unsigned short u16_length);
 extern int raydium_i2c_pda2_set_page(struct i2c_client *client,
-                    unsigned int is_suspend,
-				    unsigned char u8_page);
+				unsigned int is_suspend,
+				unsigned char u8_page);
 extern unsigned char raydium_selftest_stop_mcu(struct i2c_client *client);
 extern int raydium_burn_comp(struct i2c_client *client);
 extern int raydium_burn_fw(struct i2c_client *client);
