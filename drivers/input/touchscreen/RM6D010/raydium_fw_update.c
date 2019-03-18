@@ -38,11 +38,12 @@
 void raydium_mem_table_init(unsigned short u16_id)
 {
 	pr_info("[touch]Raydium table init 0x%x\n", u16_id);
-	
+
 	switch (u16_id) {
 	case RAD_10:
 	case RAD_11:
-		g_rad_boot_image = kzalloc(RAD_BOOT_1X_SIZE + RAD_INIT_1X_SIZE, GFP_KERNEL);
+		g_rad_boot_image = kzalloc(RAD_BOOT_1X_SIZE + RAD_INIT_1X_SIZE,
+			GFP_KERNEL);
 		g_rad_init_image = kzalloc(RAD_INIT_1X_SIZE, GFP_KERNEL);
 		g_rad_fw_image = kzalloc(RAD_FW_1X_SIZE, GFP_KERNEL);
 		g_rad_para_image = kzalloc(RAD_PARA_1X_SIZE, GFP_KERNEL);
@@ -65,43 +66,71 @@ void raydium_mem_table_init(unsigned short u16_id)
 void raydium_mem_table_setting(unsigned short u16_id)
 {
 	pr_info("[touch]Raydium ID is 0x%x\n", u16_id);
-	
+
 	switch (u16_id) {
 	case RAD_10:
-		memcpy(g_rad_boot_image, u8_rad_boot_10, RAD_BOOT_1X_SIZE);
-		memcpy(g_rad_boot_image + RAD_BOOT_1X_SIZE, u8_rad_init_10, 0x1FC);
-		memcpy(g_rad_init_image, u8_rad_init_10, RAD_INIT_1X_SIZE);
-		memcpy(g_rad_fw_image, u8_rad_fw_10 + 0x1000, RAD_FW_1X_SIZE);
-		memcpy(g_rad_para_image, u8_rad_fw_10 + 0xF1C, RAD_PARA_1X_SIZE);
-		memcpy(g_rad_testfw_image, u8_rad_testfw_10 + 0xA00, RAD_TESTFW_1X_SIZE);
-		memcpy(g_rad_testpara_image, u8_rad_testfw_10 + 0xF1C, RAD_PARA_1X_SIZE);
+		memcpy(g_rad_boot_image,
+			u8_rad_boot_10, RAD_BOOT_1X_SIZE);
+		memcpy(g_rad_boot_image + RAD_BOOT_1X_SIZE,
+			u8_rad_init_10, 0x1FC);
+		memcpy(g_rad_init_image,
+			u8_rad_init_10, RAD_INIT_1X_SIZE);
+		memcpy(g_rad_fw_image,
+			u8_rad_fw_10 + 0x1000, RAD_FW_1X_SIZE);
+		memcpy(g_rad_para_image,
+			u8_rad_fw_10 + 0xF1C, RAD_PARA_1X_SIZE);
+		memcpy(g_rad_testfw_image,
+			u8_rad_testfw_10 + 0xA00, RAD_TESTFW_1X_SIZE);
+		memcpy(g_rad_testpara_image,
+			u8_rad_testfw_10 + 0xF1C, RAD_PARA_1X_SIZE);
 		break;
-	case RAD_11:	
-		memcpy(g_rad_boot_image, u8_rad_boot_11, RAD_BOOT_1X_SIZE);
-		memcpy(g_rad_boot_image + RAD_BOOT_1X_SIZE, u8_rad_init_11, 0x1FC);
-		memcpy(g_rad_init_image, u8_rad_init_11, RAD_INIT_1X_SIZE);
-		memcpy(g_rad_fw_image, u8_rad_fw_11 + 0x1000, RAD_FW_1X_SIZE);
-		memcpy(g_rad_para_image, u8_rad_fw_11 + 0xF1C, RAD_PARA_1X_SIZE);
-		memcpy(g_rad_testfw_image, u8_rad_testfw_11 + 0xA00, RAD_TESTFW_1X_SIZE);
-		memcpy(g_rad_testpara_image, u8_rad_testfw_11 + 0xF1C, RAD_PARA_1X_SIZE);
+	case RAD_11:
+		memcpy(g_rad_boot_image,
+			u8_rad_boot_11, RAD_BOOT_1X_SIZE);
+		memcpy(g_rad_boot_image + RAD_BOOT_1X_SIZE,
+			u8_rad_init_11, 0x1FC);
+		memcpy(g_rad_init_image,
+			u8_rad_init_11, RAD_INIT_1X_SIZE);
+		memcpy(g_rad_fw_image,
+			u8_rad_fw_11 + 0x1000, RAD_FW_1X_SIZE);
+		memcpy(g_rad_para_image,
+			u8_rad_fw_11 + 0xF1C, RAD_PARA_1X_SIZE);
+		memcpy(g_rad_testfw_image,
+			u8_rad_testfw_11 + 0xA00, RAD_TESTFW_1X_SIZE);
+		memcpy(g_rad_testpara_image,
+			u8_rad_testfw_11 + 0xF1C, RAD_PARA_1X_SIZE);
 		break;
 	case RAD_20:
-		memcpy(g_rad_boot_image, u8_rad_boot_20, RAD_BOOT_2X_SIZE);
-		memcpy(g_rad_init_image, u8_rad_init_20, RAD_INIT_2X_SIZE);
-		memcpy(g_rad_fw_image, u8_rad_fw_20, RAD_FW_2X_SIZE);
-		memcpy(g_rad_para_image, u8_rad_para_20, RAD_PARA_2X_SIZE);
-		memcpy(g_rad_testfw_image, u8_rad_testfw_20, RAD_FW_2X_SIZE);
-		memcpy(g_rad_testfw_image + RAD_FW_2X_SIZE, u8_rad_testpara_20, RAD_PARA_2X_SIZE);
-		memcpy(g_rad_testpara_image, u8_rad_testpara_20, RAD_PARA_2X_SIZE);
+		memcpy(g_rad_boot_image,
+			u8_rad_boot_20, RAD_BOOT_2X_SIZE);
+		memcpy(g_rad_init_image,
+			u8_rad_init_20, RAD_INIT_2X_SIZE);
+		memcpy(g_rad_fw_image,
+			u8_rad_fw_20, RAD_FW_2X_SIZE);
+		memcpy(g_rad_para_image,
+			u8_rad_para_20, RAD_PARA_2X_SIZE);
+		memcpy(g_rad_testfw_image,
+			u8_rad_testfw_20, RAD_FW_2X_SIZE);
+		memcpy(g_rad_testfw_image + RAD_FW_2X_SIZE,
+			u8_rad_testpara_20, RAD_PARA_2X_SIZE);
+		memcpy(g_rad_testpara_image,
+			u8_rad_testpara_20, RAD_PARA_2X_SIZE);
 		break;
 	case RAD_21:
-		memcpy(g_rad_boot_image, u8_rad_boot_21, RAD_BOOT_2X_SIZE);
-		memcpy(g_rad_init_image, u8_rad_init_21, RAD_INIT_2X_SIZE);
-		memcpy(g_rad_fw_image, u8_rad_fw_21, RAD_FW_2X_SIZE);
-		memcpy(g_rad_para_image, u8_rad_para_21, RAD_PARA_2X_SIZE);
-		memcpy(g_rad_testfw_image, u8_rad_testfw_21, RAD_FW_2X_SIZE);
-		memcpy(g_rad_testfw_image + RAD_FW_2X_SIZE, u8_rad_testpara_21, RAD_PARA_2X_SIZE);
-		memcpy(g_rad_testpara_image, u8_rad_testpara_21, RAD_PARA_2X_SIZE);
+		memcpy(g_rad_boot_image,
+			u8_rad_boot_21, RAD_BOOT_2X_SIZE);
+		memcpy(g_rad_init_image,
+			u8_rad_init_21, RAD_INIT_2X_SIZE);
+		memcpy(g_rad_fw_image,
+			u8_rad_fw_21, RAD_FW_2X_SIZE);
+		memcpy(g_rad_para_image,
+			u8_rad_para_21, RAD_PARA_2X_SIZE);
+		memcpy(g_rad_testfw_image,
+			u8_rad_testfw_21, RAD_FW_2X_SIZE);
+		memcpy(g_rad_testfw_image + RAD_FW_2X_SIZE,
+			u8_rad_testpara_21, RAD_PARA_2X_SIZE);
+		memcpy(g_rad_testpara_image,
+			u8_rad_testpara_21, RAD_PARA_2X_SIZE);
 		break;
 	}
 
@@ -221,10 +250,9 @@ int raydium_do_software_reset(struct i2c_client *client)
 	if (i32_ret < 0)
 		goto exit;
 
-	if (ts->id == RAD_20 || ts->id == RAD_21) {
+	if (ts->id == RAD_20 || ts->id == RAD_21)
 		msleep(25);
-
-	} else if (ts->id == RAD_10 || ts->id == RAD_11)
+	else if (ts->id == RAD_10 || ts->id == RAD_11)
 		i32_ret = wait_irq_state(client, 1000, 2000);
 
 exit:
@@ -275,7 +303,7 @@ int set_skip_load(struct i2c_client *client)
 	i32_ret = raydium_do_software_reset(client);
 	if (i32_ret < 0)
 		pr_err("[touch]%s, SW reset error!\n", __func__);
-	
+
 	i32_ret = wait_fw_state(client, 0x20000214, 0x82, 2000, u32_retry_time);
 	if (i32_ret < 0)
 		pr_err("[touch]%s, wait_fw_state error!\n", __func__);
@@ -300,20 +328,17 @@ static int raydium_fw_upgrade_with_image(struct i2c_client *client,
 
 	switch (u8_type) {
 	case RAYDIUM_INIT:
-
 		u32_fw_size = 0x1fc;
 		p_u8_firmware_data = g_rad_init_image;
 		break;
 	case RAYDIUM_PARA:
-
-			if (ts->id == RAD_20 || ts->id == RAD_21)
-				u32_fw_size = 0x158;
-			else if (ts->id == RAD_10 || ts->id == RAD_11)
-				u32_fw_size = 0xE0;
-			p_u8_firmware_data = g_rad_para_image;
+		if (ts->id == RAD_20 || ts->id == RAD_21)
+			u32_fw_size = 0x158;
+		else if (ts->id == RAD_10 || ts->id == RAD_11)
+			u32_fw_size = 0xE0;
+		p_u8_firmware_data = g_rad_para_image;
 		break;
 	case RAYDIUM_FIRMWARE:
-
 		if (ts->id == RAD_20 || ts->id == RAD_21)
 			u32_fw_size = 0x61fc;
 		else if (ts->id == RAD_10 || ts->id == RAD_11)
@@ -322,37 +347,37 @@ static int raydium_fw_upgrade_with_image(struct i2c_client *client,
 		p_u8_firmware_data = g_rad_fw_image;
 		break;
 	case RAYDIUM_BOOTLOADER:
+		if (ts->id == RAD_20 || ts->id == RAD_21)
+			u32_fw_size = 0x7FC;
+		else if (ts->id == RAD_10 || ts->id == RAD_11)
+			u32_fw_size = 0x9FC;
 
-			if (ts->id == RAD_20 || ts->id == RAD_21)
-				u32_fw_size = 0x7FC;
-			else if (ts->id == RAD_10 || ts->id == RAD_11)
-				u32_fw_size = 0x9FC;
-		
 		p_u8_firmware_data = g_rad_boot_image;
 		break;
 	case RAYDIUM_TEST_FW:
-		if (ts->id == RAD_20 || ts->id == RAD_21) {
-			
+		if (ts->id == RAD_20 || ts->id == RAD_21)
 			u32_fw_size = 0x635C;
-		} else if (ts->id == RAD_10 || ts->id == RAD_11) {
+		else if (ts->id == RAD_10 || ts->id == RAD_11)
 			u32_fw_size = 0x55FC;
-		}
+
 		p_u8_firmware_data = g_rad_testfw_image;
 		break;
 	}
 
 	if ((ts->id == RAD_10 || ts->id == RAD_11) &&
 		(u8_type == RAYDIUM_TEST_FW)) {
-		pr_info("[touch]CRC 0x%08X\n", *(unsigned int *)(p_u8_firmware_data));
+		pr_info("[touch]CRC 0x%08X\n",
+			*(unsigned int *)(p_u8_firmware_data));
 		u32_checksum = rc_crc32((p_u8_firmware_data + 4), u32_fw_size,
 				       u32_checksum);
 		u32_checksum = bits_reverse(u32_checksum, 32);
 		memcpy(p_u8_firmware_data, &u32_checksum, 4);
 	} else {
 		pr_info("[touch]CRC 0x%08X\n",
-		 	*(unsigned int *)(p_u8_firmware_data + u32_fw_size));
-	
-		u32_checksum = rc_crc32(p_u8_firmware_data, u32_fw_size, u32_checksum);
+			*(unsigned int *)(p_u8_firmware_data + u32_fw_size));
+
+		u32_checksum = rc_crc32(p_u8_firmware_data,
+			u32_fw_size, u32_checksum);
 		u32_checksum = bits_reverse(u32_checksum, 32);
 		memcpy((p_u8_firmware_data + u32_fw_size), &u32_checksum, 4);
 	}
@@ -366,7 +391,8 @@ static int raydium_fw_upgrade_with_image(struct i2c_client *client,
 			u16_write_length = MAX_WRITE_PACKET_SIZE;
 		else
 			u16_write_length =
-				(unsigned short)(u32_fw_size - u32_write_offset);
+				(unsigned short)
+				(u32_fw_size - u32_write_offset);
 
 		i32_ret = raydium_i2c_pda_write(
 			      client,
@@ -394,7 +420,7 @@ static int raydium_boot_upgrade_1X(struct i2c_client *client)
 {
 	int i32_ret = SUCCESS;
 	unsigned char u8_buf[4];
-	
+
 	memset(u8_buf, 0, sizeof(u8_buf));
 	u8_buf[0] = 0x10;
 	u8_buf[1] = 0x08;
@@ -521,7 +547,7 @@ static int raydium_fw_upgrade_1X(struct i2c_client *client,
 {
 	int i32_ret = 0;
 	unsigned char u8_buf[4];
-	unsigned short u16_retry_time = 1000;
+	unsigned short u16_retry = 1000;
 	struct raydium_ts_data *ts =
 		(struct raydium_ts_data *)i2c_get_clientdata(client);
 
@@ -561,7 +587,7 @@ static int raydium_fw_upgrade_1X(struct i2c_client *client,
 		goto exit_upgrade;
 
 	/*#confirm in burn mode*/
-	if (wait_fw_state(client, 0x50000900, 63, 2000, u16_retry_time) == ERROR) {
+	if (wait_fw_state(client, 0x50000900, 63, 2000, u16_retry) == ERROR) {
 		pr_err("[touch]Error, confirm in burn mode\n");
 		i32_ret = ERROR;
 		goto exit_upgrade;
@@ -696,14 +722,14 @@ static int raydium_fw_upgrade_1X(struct i2c_client *client,
 
 	/*#Wait bootloader check addr and PRAM unlock*/
 	/*#Confirm g_u8_sync_data.ret_data at 0x20000214 is SET_ADDR_READY*/
-	if (wait_fw_state(client, 0x20000214, 161, 2000, u16_retry_time) == ERROR) {
+	if (wait_fw_state(client, 0x20000214, 161, 2000, u16_retry) == ERROR) {
 		pr_err("[touch]Error, SET_ADDR_READY\n");
 		i32_ret = ERROR;
 		goto exit_upgrade;
 	}
 
 	/*#Confirm g_u8_sync_data.cmd_type at 0x20000210 is WRT_PRAM_DATA*/
-	if (wait_fw_state(client, 0x20000210, 163, 1000, u16_retry_time) == ERROR) {
+	if (wait_fw_state(client, 0x20000210, 163, 1000, u16_retry) == ERROR) {
 		pr_err("[touch]Error, WRT_PRAM_DATA\n");
 		i32_ret = ERROR;
 		goto exit_upgrade;
@@ -750,14 +776,14 @@ static int raydium_fw_upgrade_1X(struct i2c_client *client,
 	 * wait(checksum okay) ACK cmd
 	 * (gu8I2CSyncData.cmd_type=0xa5 at 0x20000210)
 	 */
-	if (wait_fw_state(client, 0x20000210, 165, 2000, u16_retry_time) == ERROR) {
+	if (wait_fw_state(client, 0x20000210, 165, 2000, u16_retry) == ERROR) {
 		pr_err("[touch]Error, WRT_CHECKSUM_OK\n");
 		i32_ret = ERROR;
 		goto exit_upgrade;
 	}
 
 	/*#confirm ACK cmd result(gu8I2CSyncData.ret_data=0xa5 at 0x20000214)*/
-	if (wait_fw_state(client, 0x20000214, 165, 1000, u16_retry_time) == ERROR) {
+	if (wait_fw_state(client, 0x20000214, 165, 1000, u16_retry) == ERROR) {
 		pr_err("[touch]Error, confirm ACK cmd result\n");
 		i32_ret = ERROR;
 		goto exit_upgrade;
@@ -783,7 +809,7 @@ static int raydium_fw_upgrade_1X(struct i2c_client *client,
 		goto exit_upgrade;
 
 	/*#wait for input unlock key*/
-	if (wait_fw_state(client, 0x20000210, 168, 2000, u16_retry_time) == ERROR) {
+	if (wait_fw_state(client, 0x20000210, 168, 2000, u16_retry) == ERROR) {
 		pr_err("[touch]Error, wait for input unlock key\n");
 		i32_ret = ERROR;
 		goto exit_upgrade;
@@ -825,7 +851,7 @@ static int raydium_fw_upgrade_1X(struct i2c_client *client,
 	if (i32_ret < 0)
 		goto exit_upgrade;
 
-	//raydium_irq_control(ts, ENABLE);
+	/*raydium_irq_control(ts, ENABLE);*/
 
 	/*#clr sync_data(0x20000200) = 0 as finish*/
 	memset(u8_buf, 0, sizeof(u8_buf));
@@ -844,7 +870,7 @@ static int raydium_fw_upgrade_1X(struct i2c_client *client,
 	 * confirm burning_state result (gu8I2CSyncData.burning_state =
 	 * BURNING_WRT_FLASH_FINISH at 0x2000020C)
 	 */
-	if (wait_fw_state(client, 0x2000020c, 6, 2000, u16_retry_time) == ERROR) {
+	if (wait_fw_state(client, 0x2000020c, 6, 2000, u16_retry) == ERROR) {
 		pr_err("[touch]Error, wait erase/wrt finish\n");
 		i32_ret = ERROR;
 		goto exit_upgrade;
@@ -889,7 +915,7 @@ static int raydium_fw_upgrade_1X(struct i2c_client *client,
 		goto exit_upgrade;
 
 	/* wait sw reset finished 0x20000214 = 0x82 */
-	if (wait_fw_state(client, 0x20000214, 130, 2000, u16_retry_time) == ERROR) {
+	if (wait_fw_state(client, 0x20000214, 130, 2000, u16_retry) == ERROR) {
 		pr_err("[touch]Error, wait sw reset finished\n");
 		i32_ret = ERROR;
 		goto exit_upgrade;
@@ -905,14 +931,16 @@ static int raydium_fw_upgrade_1X(struct i2c_client *client,
 			goto exit_upgrade;
 
 		/*#wait crc check finish*/
-		if (wait_fw_state(client, 0x20000208, 2, 2000, u16_retry_time) == ERROR) {
+		if (wait_fw_state(client, 0x20000208, 2, 2000,
+			u16_retry) == ERROR) {
 			pr_err("[touch]Error, wait crc check finish\n");
 			i32_ret = ERROR;
 			goto exit_upgrade;
 		}
 
 		/*#crc check pass 0x20000214 = 0x81*/
-		if (wait_fw_state(client, 0x20000214, 0x81, 1000, u16_retry_time) == ERROR) {
+		if (wait_fw_state(client, 0x20000214, 0x81, 1000,
+			u16_retry) == ERROR) {
 			pr_err("[touch]Error, confirm crc result\n");
 			i32_ret = ERROR;
 			goto exit_upgrade;
@@ -1455,8 +1483,8 @@ int raydium_fw_update_check(struct raydium_ts_data *ts,
 #endif
 	mutex_lock(&ts->lock);
 	i32_ret = raydium_i2c_pda2_set_page(ts->client,
-                    ts->is_suspend,
-					RAYDIUM_PDA2_PAGE_0);
+				ts->is_suspend,
+				RAYDIUM_PDA2_PAGE_0);
 	if (i32_ret < 0)
 		goto exit_error;
 
@@ -1507,8 +1535,8 @@ int raydium_fw_update_check(struct raydium_ts_data *ts,
 		raydium_irq_control(ts, ENABLE);
 		mutex_lock(&ts->lock);
 		i32_ret = raydium_i2c_pda2_set_page(ts->client,
-                        ts->is_suspend,
-						RAYDIUM_PDA2_PAGE_0);
+					ts->is_suspend,
+					RAYDIUM_PDA2_PAGE_0);
 		if (i32_ret < 0)
 			goto exit_error;
 
@@ -1562,12 +1590,12 @@ exit_error:
 		return -EINVAL;
 
 	if (u16_length == 4)
-		u8_mode |= RAYDIUM_I2C_PDA_MODE_ENABLE |
-			RAYDIUM_I2C_PDA_2_MODE_DISABLE |
-			RAYDIUM_I2C_PDA_MODE_WORD_MODE;
+		u8_mode |= RAD_I2C_PDA_MODE_ENABLE |
+			RAD_I2C_PDA_2_MODE_DISABLE |
+			RAD_I2C_PDA_MODE_WORD_MODE;
 	else
-		u8_mode |= RAYDIUM_I2C_PDA_MODE_ENABLE |
-			RAYDIUM_I2C_PDA_2_MODE_DISABLE;
+		u8_mode |= RAD_I2C_PDA_MODE_ENABLE |
+			RAD_I2C_PDA_2_MODE_DISABLE;
 
 	u8_buf[0] = u32_addr & MASK_8BIT;
 	memcpy(&u8_buf[1], p_u8_w_data, u16_length);
@@ -1667,16 +1695,18 @@ int raydium_load_test_fw(struct i2c_client *client)
 
 	/*Sending test fw*/
 	if (ts->id == RAD_20 || ts->id == RAD_21) {
-		i32_ret = raydium_fw_upgrade_with_image(client, 0x800, RAYDIUM_TEST_FW);
+		i32_ret = raydium_fw_upgrade_with_image(client,
+			0x800, RAYDIUM_TEST_FW);
 		if (i32_ret < 0)
 			goto exit_upgrade;
 	} else if (ts->id == RAD_10 || ts->id == RAD_11) {
-		i32_ret = raydium_fw_upgrade_with_image(client, 0xA00, RAYDIUM_TEST_FW);
+		i32_ret = raydium_fw_upgrade_with_image(client,
+			0xA00, RAYDIUM_TEST_FW);
 		if (i32_ret < 0)
 			goto exit_upgrade;
 	}
 
-	//check pram crc data
+	/*check pram crc data*/
 	if (ts->id == RAD_20 || ts->id == RAD_21) {
 		memset(u8_buf, 0, sizeof(u8_buf));
 		u8_buf[1] = 0x08;
@@ -1690,7 +1720,7 @@ int raydium_load_test_fw(struct i2c_client *client)
 			goto exit_upgrade;
 		u8_buf[3] |= 0x81;
 		i32_ret = raydium_i2c_pda_write(client, 0x5000094C, u8_buf, 4);
-		msleep(10);
+		usleep_range(9500, 10500);
 		i32_ret = raydium_i2c_pda_read(client, 0x50000978, u8_buf, 4);
 		if (i32_ret < 0)
 			goto exit_upgrade;
@@ -1747,7 +1777,7 @@ int raydium_load_test_fw(struct i2c_client *client)
 	i32_ret = raydium_i2c_pda_read(client, 0x50000918, u8_buf, 4);
 	if (i32_ret < 0)
 		goto exit_upgrade;
-	u8_buf[0] |= 0x10;
+	u8_buf[0] = 0x10;
 	i32_ret = raydium_i2c_pda_write(client, 0x50000918, u8_buf, 4);
 	if (i32_ret < 0)
 		goto exit_upgrade;
