@@ -179,3 +179,8 @@ obj-$(CONFIG_ESOC)              += esoc/
 obj-$(CONFIG_FPGA)		+= fpga/
 obj-$(CONFIG_SENSORS_SSC)		+= sensors/
 obj-$(CONFIG_TEE)		+= tee/
+
+# xuke @ 20190318	To customize dts and drivers.	Begin
+obj-y += private-drivers/
+# End
+

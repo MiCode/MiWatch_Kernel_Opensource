@@ -89,6 +89,38 @@ TARGET_PREBUILT_INT_KERNEL := $(KERNEL_OUT)/arch/$(KERNEL_ARCH)/boot/zImage
 endif
 endif
 
+# xuke @ 20190318	To customize dts and drivers.	Begin
+#$(info xuke: KERNEL_CUSTOM: $(KERNEL_CUSTOM))
+ifneq ($(KERNEL_CUSTOM),)
+CUSTOM_OVERLAY_DTS := custom-overlay
+CUSTOM_PRIVATE_DRIVERS := private-drivers
+KERNEL_CUSTOM_DIR := custom-$(KERNEL_CUSTOM)
+KERNEL_CUSTOM_OVERLAY_DTS_DIR := $(TARGET_KERNEL_SOURCE)/arch/arm64/boot/dts/qcom
+KERNEL_CUSTOM_OVERLAY_DTS_FILE := $(KERNEL_CUSTOM_OVERLAY_DTS_DIR)/$(CUSTOM_OVERLAY_DTS).dts
+KERNEL_CUSTOM_OVERLAY_DRIVERS_DIR := $(TARGET_KERNEL_SOURCE)/drivers/$(CUSTOM_PRIVATE_DRIVERS)
+$(info custom overlay dts: $(KERNEL_CUSTOM_OVERLAY_DTS_FILE))
+#KERNEL_CUSTOM_OVERLAY_DTS_EXIST := $(wildcard $(KERNEL_CUSTOM_OVERLAY_DTS_DIR)/$(CUSTOM_OVERLAY_DTS)*)
+KERNEL_CUSTOM_OVERLAY_DTS_EXIST := $(shell find $(KERNEL_CUSTOM_OVERLAY_DTS_DIR) -type l -name $(CUSTOM_OVERLAY_DTS)*)
+#$(info xuke: KERNEL_CUSTOM_OVERLAY_DTS_EXIST: $(KERNEL_CUSTOM_OVERLAY_DTS_EXIST))
+ifneq ($(filter $(KERNEL_CUSTOM_OVERLAY_DTS_FILE),$(KERNEL_CUSTOM_OVERLAY_DTS_EXIST)),)
+$(info Relink $(KERNEL_CUSTOM_DIR) overlay...)
+$(foreach f,$(KERNEL_CUSTOM_OVERLAY_DTS_EXIST),$(shell unlink $(f)))
+endif
+KERNEL_CUSTOM_OVERLAY_DRIVERS_EXIST := $(shell find $(TARGET_KERNEL_SOURCE)/drivers -type l -name $(CUSTOM_PRIVATE_DRIVERS))
+#$(info KERNEL_CUSTOM_OVERLAY_DRIVERS_EXIST: $(KERNEL_CUSTOM_OVERLAY_DRIVERS_EXIST))
+ifneq ($(KERNEL_CUSTOM_OVERLAY_DRIVERS_EXIST),)
+$(foreach f,$(KERNEL_CUSTOM_OVERLAY_DRIVERS_EXIST),$(shell unlink $(f)))
+endif
+CUSTOM_OVERLAY_DTS_DIR := $(dir $(mkfile_path))../$(KERNEL_CUSTOM_DIR)/devicetree/
+CUSTOM_OVERLAY_DRIVERS_DIR := $(dir $(mkfile_path))../$(KERNEL_CUSTOM_DIR)/private/drivers
+$(shell ln -s $(CUSTOM_OVERLAY_DTS_DIR)* $(KERNEL_CUSTOM_OVERLAY_DTS_DIR))
+$(shell ln -s $(CUSTOM_OVERLAY_DRIVERS_DIR) $(KERNEL_CUSTOM_OVERLAY_DRIVERS_DIR))
+export KERNEL_CUSTOM_DIR
+else
+$(error There is no custom overlay!)
+endif
+# End
+
 ifeq ($(TARGET_KERNEL_APPEND_DTB), true)
 $(info Using appended DTB)
 TARGET_PREBUILT_INT_KERNEL := $(TARGET_PREBUILT_INT_KERNEL)-dtb
@@ -116,6 +148,23 @@ mpath=`dirname $$mdpath`; rm -rf $$mpath;\
 fi
 endef
 
+# xuke @ 20190318	To customize dts and drivers.	Begin
+define mv-private-modules
+mdpath=`find $(KERNEL_MODULES_OUT) -type f -name modules.dep`;\
+if [ "$$mdpath" != "" ];then\
+mpath=`dirname $$mdpath`;\
+ko=`find $(KERNEL_MODULES_OUT) -type f -name private-drivers-*.ko`;\
+if [ "$$ko" != "" ]; then \
+echo "xuke: Copy $$ko to vendor/lib/modules"; \
+mkdir -p -m 775 $(PRODUCT_OUT)/vendor/lib/modules; \
+for i in $$ko; do cp -fr $$i $(PRODUCT_OUT)/vendor/lib/modules/; done;\
+else \
+echo "xuke: ERROR! There's no private module created!"; \
+fi \
+fi
+endef
+# End
+
 ifneq ($(KERNEL_LEGACY_DIR),true)
 $(KERNEL_USR): $(KERNEL_HEADERS_INSTALL)
 	rm -rf $(KERNEL_SYMLINK)
@@ -141,6 +190,9 @@ $(TARGET_PREBUILT_INT_KERNEL): $(KERNEL_OUT) $(KERNEL_HEADERS_INSTALL)
 	$(MAKE) -C $(TARGET_KERNEL_SOURCE) O=$(BUILD_ROOT_LOC)$(KERNEL_OUT) $(KERNEL_MAKE_ENV) ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(KERNEL_CROSS_COMPILE) $(KERNEL_CFLAGS) modules
 	$(MAKE) -C $(TARGET_KERNEL_SOURCE) O=$(BUILD_ROOT_LOC)$(KERNEL_OUT) INSTALL_MOD_PATH=$(BUILD_ROOT_LOC)../$(KERNEL_MODULES_INSTALL) INSTALL_MOD_STRIP=1 $(KERNEL_MAKE_ENV) ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(KERNEL_CROSS_COMPILE) modules_install
 	$(mv-modules)
+# xuke @ 20190318	To customize dts and drivers.	Begin
+	$(mv-private-modules)
+# End
 	$(clean-module-folder)
 
 $(KERNEL_HEADERS_INSTALL): $(KERNEL_OUT)
@@ -160,6 +212,11 @@ $(KERNEL_HEADERS_INSTALL): $(KERNEL_OUT)
 			echo "Overriding kernel config with '$(KERNEL_CONFIG_OVERRIDE)'"; \
 			echo $(KERNEL_CONFIG_OVERRIDE) >> $(KERNEL_OUT)/.config; \
 			$(MAKE) -C $(TARGET_KERNEL_SOURCE) O=$(BUILD_ROOT_LOC)$(KERNEL_OUT) $(KERNEL_MAKE_ENV) ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(KERNEL_CROSS_COMPILE) oldconfig; fi
+# xuke @ 20190318	To customize dts and drivers.	Begin
+	if [ ! -z "$(KERNEL_CUSTOM)" ]; then \
+			cat $(CUSTOM_OVERLAY_DRIVERS_DIR)/../custom_defconfig >> $(KERNEL_OUT)/.config; \
+			$(MAKE) -C $(TARGET_KERNEL_SOURCE) O=$(BUILD_ROOT_LOC)$(KERNEL_OUT) $(KERNEL_MAKE_ENV) ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(KERNEL_CROSS_COMPILE) oldconfig; fi
+# End
 
 kerneltags: $(KERNEL_OUT) $(KERNEL_CONFIG)
 	$(MAKE) -C $(TARGET_KERNEL_SOURCE) O=$(BUILD_ROOT_LOC)$(KERNEL_OUT) $(KERNEL_MAKE_ENV) ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(KERNEL_CROSS_COMPILE) tags

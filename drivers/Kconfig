@@ -210,4 +210,8 @@ source "drivers/sensors/Kconfig"
 
 source "drivers/tee/Kconfig"
 
+# xuke @ 20190318	To customize dts and drivers.	Begin
+source "drivers/private-drivers/Kconfig"
+# End
+
 endmenu

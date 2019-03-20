@@ -1243,9 +1243,6 @@ config TOUCHSCREEN_SYNAPTICS_DSX
           If unsure, say N.
 
 source "drivers/input/touchscreen/synaptics_dsx/Kconfig"
-source "drivers/input/touchscreen/focaltech_touch/Kconfig"
-source "drivers/input/touchscreen/RM6D010/Kconfig"
-source "drivers/input/touchscreen/TMA525C/Kconfig"
 
 config TOUCHSCREEN_FT5X06
        tristate "FocalTech touchscreens"
