@@ -1,4 +1,4 @@
-/* Copyright (c) 2012-2018, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2012-2019, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -380,6 +380,7 @@ static int __write_queue(struct vidc_iface_q_info *qinfo, u8 *packet,
 		dprintk(VIDC_ERR, "Invalid write index");
 		return -ENODATA;
 	}
+
 	if (new_write_idx < (qinfo->q_array.mem_size >> 2)) {
 		memcpy(write_ptr, packet, packet_size_in_words << 2);
 	} else {
@@ -480,7 +481,7 @@ static int __read_queue(struct vidc_iface_q_info *qinfo, u8 *packet,
 	u32 *read_ptr;
 	u32 receive_request = 0;
 	u32 read_idx, write_idx;
-		int rc = 0;
+	int rc = 0;
 
 	if (!qinfo || !packet || !pb_tx_req_is_set) {
 		dprintk(VIDC_ERR, "Invalid Params\n");
@@ -515,6 +516,7 @@ static int __read_queue(struct vidc_iface_q_info *qinfo, u8 *packet,
 
 	read_idx = queue->qhdr_read_idx;
 	write_idx = queue->qhdr_write_idx;
+
 	if (read_idx == write_idx) {
 		queue->qhdr_rx_req = receive_request;
 		/*
@@ -539,6 +541,7 @@ static int __read_queue(struct vidc_iface_q_info *qinfo, u8 *packet,
 		dprintk(VIDC_ERR, "Invalid read index\n");
 		return -ENODATA;
 	}
+
 	packet_size_in_words = (*read_ptr) >> 2;
 	if (!packet_size_in_words) {
 		dprintk(VIDC_ERR, "Zero packet size\n");
@@ -569,11 +572,11 @@ static int __read_queue(struct vidc_iface_q_info *qinfo, u8 *packet,
 		rc = -ENODATA;
 	}
 
-
 	if (new_read_idx != write_idx)
 		queue->qhdr_rx_req = 0;
 	else
 		queue->qhdr_rx_req = receive_request;
+
 	queue->qhdr_read_idx = new_read_idx;
 	/*
 	 * mb() to ensure qhdr is updated in main memory

@@ -623,7 +623,7 @@ static int update_msg_mask_tbl_entry(struct diag_msg_mask_t *mask,
 			temp_range = MAX_SSID_PER_RANGE;
 			mask->ssid_last = mask->ssid_first + temp_range - 1;
 		} else
-		mask->ssid_last = range->ssid_last;
+			mask->ssid_last = range->ssid_last;
 		mask->ssid_last_tools = mask->ssid_last;
 		mask->range = temp_range;
 	}

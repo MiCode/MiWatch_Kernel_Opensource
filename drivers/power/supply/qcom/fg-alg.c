@@ -1064,8 +1064,10 @@ static void ttf_work(struct work_struct *work)
 		pr_err("failed to get ttf_valid rc=%d\n", rc);
 		goto end_work;
 	}
+
 	if (!valid)
 		goto end_work;
+
 	rc =  ttf->get_ttf_param(ttf->data, TTF_CHG_STATUS, &charge_status);
 	if (rc < 0) {
 		pr_err("failed to get charge_status rc=%d\n", rc);

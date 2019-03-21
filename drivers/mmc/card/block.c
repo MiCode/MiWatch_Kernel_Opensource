@@ -1310,12 +1310,14 @@ static int mmc_blk_ioctl_multi_cmd(struct block_device *bdev,
 			goto cmd_done;
 		}
 	}
+
 	for (i = 0; i < num_of_cmds && !ioc_err; i++)
 		ioc_err = __mmc_blk_ioctl_cmd(card, md, idata[i]);
 
 	/* Always switch back to main area after RPMB access */
 	if (md->area_type & MMC_BLK_DATA_AREA_RPMB)
 		mmc_blk_part_switch(card, dev_get_drvdata(&card->dev));
+
 	if (mmc_card_cmdq(card)) {
 		if (mmc_cmdq_halt(card->host, false))
 			pr_err("%s: %s: cmdq unhalt failed\n",

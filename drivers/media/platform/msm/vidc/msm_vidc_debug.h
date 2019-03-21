@@ -1,4 +1,4 @@
-/* Copyright (c) 2012-2017, 2019, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2012-2017, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -100,9 +100,9 @@ extern bool msm_vidc_syscache_disable;
 	do { \
 		if (msm_vidc_debug & __level) { \
 			if (msm_vidc_debug_out == VIDC_OUT_PRINTK) { \
-			pr_info(VIDC_DBG_TAG __fmt, \
-					VIDC_MSG_PRIO2STRING(__level), \
-					## arg); \
+				pr_info(VIDC_DBG_TAG __fmt, \
+						VIDC_MSG_PRIO2STRING(__level), \
+						## arg); \
 			} else if (msm_vidc_debug_out == VIDC_OUT_FTRACE) { \
 				trace_printk(KERN_DEBUG VIDC_DBG_TAG __fmt, \
 						VIDC_MSG_PRIO2STRING(__level), \

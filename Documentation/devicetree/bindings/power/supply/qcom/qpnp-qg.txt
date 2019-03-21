@@ -312,6 +312,7 @@ First Level Node - QGAUGE device
 	Usage:      optional
 	Value type: <bool>
 	Definition: Boolean property to run QG in Voltage-only mode of QG.
+
 - qcom,shutdown-temp-diff
 	Usage:      optional
 	Value type: <u32>

@@ -11,9 +11,6 @@
  */
 
 #include "dsi-panel-390p-auo-cmd.dtsi"
-#include "dsi-panel-boe-rm6d010-454p-cmd.dtsi"
-#include "dsi-panel-auo-h139clx01-454p-cmd.dtsi"
-#include "dsi-panel-edo-h162-320p-cmd.dtsi"
 
 &soc {
 	dsi_panel_pwr_supply: dsi_panel_pwr_supply {
@@ -46,8 +43,8 @@
 		qcom,panel-supply-entry@0 {
 			reg = <0>;
 			qcom,supply-name = "vdd";
-			qcom,supply-min-voltage = <1800000>;
-			qcom,supply-max-voltage = <1800000>;
+			qcom,supply-min-voltage = <3000000>;
+			qcom,supply-max-voltage = <3000000>;
 			qcom,supply-enable-load = <100000>;
 			qcom,supply-disable-load = <100>;
 		};
@@ -76,4 +73,3 @@
 	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_dcs";
 	qcom,panel-supply-entries = <&dsi_pm660_panel_pwr_supply>;
 };
-

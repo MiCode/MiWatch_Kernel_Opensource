@@ -1031,6 +1031,7 @@ static void process_udata_work(struct work_struct *work)
 
 	if (chip->udata.param[QG_VBMS_IBAT].valid)
 		chip->vbms_ibat_ua = chip->udata.param[QG_VBMS_IBAT].data;
+
 	if (chip->udata.param[QG_SOC].valid ||
 			chip->udata.param[QG_SYS_SOC].valid) {
 
@@ -2848,6 +2849,7 @@ done_fifo:
 
 	if (chip->dt.qg_vbms_mode)
 		chip->dt.s3_entry_fifo_length = 1;
+
 	if (chip->dt.s3_entry_fifo_length != -EINVAL) {
 		if (chip->dt.s3_entry_fifo_length < 1)
 			chip->dt.s3_entry_fifo_length = 1;
@@ -2954,6 +2956,7 @@ done_fifo:
 static int qg_post_init(struct qpnp_qg *chip)
 {
 	u8 status = 0;
+
 	/* disable all IRQs if profile is not loaded */
 	if (!chip->profile_loaded) {
 		vote(chip->vbatt_irq_disable_votable,
@@ -3456,8 +3459,10 @@ static int qg_parse_dt(struct qpnp_qg *chip)
 			chip->cl->dt.min_start_soc, chip->cl->dt.max_start_soc,
 			chip->cl->dt.min_temp, chip->cl->dt.max_temp);
 	}
+
 	chip->dt.qg_vbms_mode = of_property_read_bool(node,
 					"qcom,qg-vbms-mode");
+
 	qg_dbg(chip, QG_DEBUG_PON, "DT: vbatt_empty_mv=%dmV vbatt_low_mv=%dmV delta_soc=%d ext-sns=%d qg_vbms_mode=%d\n",
 			chip->dt.vbatt_empty_mv, chip->dt.vbatt_low_mv,
 			chip->dt.delta_soc, chip->dt.qg_ext_sense,
@@ -3480,12 +3485,14 @@ static int process_suspend(struct qpnp_qg *chip)
 	cancel_delayed_work_sync(&chip->ttf->ttf_work);
 
 	chip->suspend_data = false;
+
 	val = (chip->seq_no % 128) + 1;
 	rc = qg_sdam_multibyte_write(QG_SDAM_SEQ_OFFSET, &val, 1);
 	if (rc < 0) {
 		pr_err("Failed to write sdam seq, rc=%d\n", rc);
 		return rc;
 	}
+	/* read STATUS2 register to clear its last state */
 	qg_read(chip, chip->qg_base + QG_STATUS2_REG, &status, 1);
 
 	/* ignore any suspend processing if we are charging */
@@ -3517,6 +3524,7 @@ static int process_suspend(struct qpnp_qg *chip)
 	else if (fifo_rt_length >=
 			(chip->dt.s2_fifo_length - sleep_fifo_length))
 		process_fifo = true;
+
 	if (process_fifo) {
 		rc = qg_master_hold(chip, true);
 		if (rc < 0) {
