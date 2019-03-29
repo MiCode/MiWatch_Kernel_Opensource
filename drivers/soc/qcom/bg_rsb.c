@@ -24,6 +24,7 @@
 #include <linux/platform_device.h>
 #include <soc/qcom/glink.h>
 #include <linux/input.h>
+#include <linux/slab.h>
 #include <linux/delay.h>
 #include <linux/wait.h>
 #include <linux/sched.h>
@@ -885,13 +886,16 @@ static int store_enable(struct device *pdev, struct device_attribute *attr,
 	char *arr = kstrdup(buff, GFP_KERNEL);
 
 	if (!arr)
-		goto err_ret;
+		return -ENOMEM;
+
+	if (!dev->is_cnfgrd) {
+		kfree(arr);
+		return -ENOMEDIUM;
+	}
 
 	rc = split_bg_work(dev, arr);
 	if (rc != 0)
 		pr_err("Not able to process request\n");
-
-err_ret:
 	return count;
 }
 
