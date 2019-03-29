@@ -16,6 +16,8 @@
 #include <linux/init.h>
 #include <linux/kernel.h>
 #include <linux/module.h>
+#include <linux/fs.h>
+#include <linux/string.h>
 #include <linux/of.h>
 #include <linux/device.h>
 #include <linux/mutex.h>
@@ -28,6 +30,8 @@
 #include <linux/regulator/consumer.h>
 #include <soc/qcom/subsystem_restart.h>
 #include <soc/qcom/subsystem_notif.h>
+#include <asm/unistd.h>
+#include <asm/uaccess.h>
 
 #include "bgrsb.h"
 
@@ -50,6 +54,8 @@
 #define BGRSB_GLINK_POWER_ENABLE 6
 #define BGRSB_GLINK_POWER_DISABLE 7
 
+#define FILE_CROWN_KEY "/mnt/vendor/persist/crown_key"
+#define FILE_CROWNKEY_ENABLE "/sys/devices/platform/soc/soc:qcom,bg-rsb/enable"
 
 struct bgrsb_regulator {
 	struct regulator *regldo11;
@@ -525,12 +531,41 @@ err_ret:
 static int bgrsb_enable(struct bgrsb_priv *dev, bool enable)
 {
 	int rc = 0;
+	int ret = 0;
+	struct file *fp_read = NULL;
+	struct file *fp_write = NULL;
+	mm_segment_t old_fs_read;
+	mm_segment_t old_fs_write;
+	char buf[10] ="0";
 	struct bgrsb_msg req = {0};
 
 	req.cmd_id = 0x02;
 	req.data = enable ? 0x01 : 0x00;
 
 	rc = bgrsb_tx_msg(dev, &req, BGRSB_MSG_SIZE);
+	fp_read = filp_open(FILE_CROWN_KEY,O_RDONLY,0);
+	if(IS_ERR(fp_read))
+	{
+		pr_err("bgrsb_enable in fp_read failed\n");
+		return rc;
+	}
+	old_fs_read = get_fs();
+	set_fs(KERNEL_DS);
+	fp_read->f_pos =0;
+	ret = vfs_read(fp_read,buf,sizeof(buf),&fp_read->f_pos);
+	filp_close(fp_read,NULL);
+	fp_write = filp_open(FILE_CROWNKEY_ENABLE,O_RDWR,0644);
+	if(IS_ERR(fp_write))
+	{
+		pr_err("bgrsb_enable in fp_write failed\n");
+		return rc;
+	}
+	old_fs_write = get_fs();
+	set_fs(KERNEL_DS);
+	fp_write->f_pos =0;
+	vfs_write(fp_write,buf,sizeof(buf),&fp_write->f_pos);
+	filp_close(fp_write,NULL);
+
 	return rc;
 }
 
