@@ -5,6 +5,7 @@
 menu "Character devices"
 
 source "drivers/tty/Kconfig"
+source "drivers/char/i2c_devinfo/Kconfig"
 
 config DEVMEM
 	bool "/dev/mem virtual device support"

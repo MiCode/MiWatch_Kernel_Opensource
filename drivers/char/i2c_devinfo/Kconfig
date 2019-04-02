@@ -1,0 +1,5 @@
+config I2C_DEVINFO
+    tristate "I2c devices info for I2C testing"
+    default y
+    help
+    This is the i2c-devinfo driver for android system
