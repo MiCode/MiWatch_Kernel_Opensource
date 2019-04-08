@@ -51,4 +51,6 @@ enum nfcc_chip_variant {
 	NFCC_PN66T			= 0x18,	/**< NFCC PN66T */
 	NFCC_NOT_SUPPORTED	        = 0xFF	/**< NFCC is not supported */
 };
+
+extern int i2c_devinfo_device_write(char *buf);
 #endif
