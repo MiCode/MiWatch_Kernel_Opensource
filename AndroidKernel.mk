@@ -91,7 +91,10 @@ endif
 
 # xuke @ 20190318	To customize dts and drivers.	Begin
 #$(info xuke: KERNEL_CUSTOM: $(KERNEL_CUSTOM))
-ifneq ($(KERNEL_CUSTOM),)
+ifeq ($(KERNEL_CUSTOM),)
+$(warning There is no custom overlay!)
+KERNEL_CUSTOM := baiji
+endif
 CUSTOM_OVERLAY_DTS := custom-overlay
 CUSTOM_PRIVATE_DRIVERS := private-drivers
 KERNEL_CUSTOM_DIR := custom-$(KERNEL_CUSTOM)
@@ -116,9 +119,6 @@ CUSTOM_OVERLAY_DRIVERS_DIR := $(dir $(mkfile_path))../$(KERNEL_CUSTOM_DIR)/priva
 $(shell ln -s $(CUSTOM_OVERLAY_DTS_DIR)* $(KERNEL_CUSTOM_OVERLAY_DTS_DIR))
 $(shell ln -s $(CUSTOM_OVERLAY_DRIVERS_DIR) $(KERNEL_CUSTOM_OVERLAY_DRIVERS_DIR))
 export KERNEL_CUSTOM_DIR
-else
-$(error There is no custom overlay!)
-endif
 # End
 
 ifeq ($(TARGET_KERNEL_APPEND_DTB), true)
