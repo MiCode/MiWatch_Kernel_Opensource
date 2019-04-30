@@ -459,8 +459,12 @@ int mdss_dsi_panel_reset(struct mdss_panel_data *pdata, int enable)
 			}
 
 			for (i = 0; i < pdata->panel_info.rst_seq_len; ++i) {
+#ifdef CONFIG_LCD_RESET_HIGH_FOR_TOUCH_WAKE
+				gpio_set_value((ctrl_pdata->rst_gpio), 1);
+#else
 				gpio_set_value((ctrl_pdata->rst_gpio),
 					pdata->panel_info.rst_seq[i]);
+#endif
 				if (pdata->panel_info.rst_seq[++i])
 					usleep_range((pinfo->rst_seq[i] * 1000),
 					(pinfo->rst_seq[i] * 1000) + 10);
