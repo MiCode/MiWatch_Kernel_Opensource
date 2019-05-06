@@ -1129,7 +1129,7 @@ static int nqx_probe(struct i2c_client *client,
 	nqx_dev->irq_wake_up = false;
 
 	if (!r)
-		i2c_devinfo_device_write("NFC:1,");
+		i2c_devinfo_device_write("NFC:1;");
 
 	dev_err(&client->dev,
 	"%s: probing NFCC NQxxx exited successfully\n",
@@ -1169,7 +1169,7 @@ err_platform_data:
 	dev_err(&client->dev,
 	"%s: probing nqxx failed, check hardware\n",
 		 __func__);
-	i2c_devinfo_device_write("NFC:0,");
+	i2c_devinfo_device_write("NFC:0;");
 	return r;
 }
 
