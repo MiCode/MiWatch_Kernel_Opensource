@@ -535,8 +535,7 @@ static int bgrsb_enable(struct bgrsb_priv *dev, bool enable)
 	int ret = 0;
 	struct file *fp_read = NULL;
 	struct file *fp_write = NULL;
-	mm_segment_t old_fs_read;
-	mm_segment_t old_fs_write;
+	mm_segment_t old_fs;
 	char buf[10] ="0";
 	struct bgrsb_msg req = {0};
 
@@ -550,7 +549,7 @@ static int bgrsb_enable(struct bgrsb_priv *dev, bool enable)
 		pr_err("bgrsb_enable in fp_read failed\n");
 		return rc;
 	}
-	old_fs_read = get_fs();
+	old_fs = get_fs();
 	set_fs(KERNEL_DS);
 	fp_read->f_pos =0;
 	ret = vfs_read(fp_read,buf,sizeof(buf),&fp_read->f_pos);
@@ -561,11 +560,10 @@ static int bgrsb_enable(struct bgrsb_priv *dev, bool enable)
 		pr_err("bgrsb_enable in fp_write failed\n");
 		return rc;
 	}
-	old_fs_write = get_fs();
-	set_fs(KERNEL_DS);
 	fp_write->f_pos =0;
 	vfs_write(fp_write,buf,sizeof(buf),&fp_write->f_pos);
 	filp_close(fp_write,NULL);
+	set_fs(old_fs);
 
 	return rc;
 }
