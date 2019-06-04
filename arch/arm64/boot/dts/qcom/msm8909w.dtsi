@@ -117,14 +117,14 @@
 	cpu0-2-step {
 		trips {
 			cpu0-2-step-trip {
-				temperature = <60000>;
+				temperature = <95000>;
 			};
 		};
 	};
 	cpu1-3-step {
 		trips {
 			cpu1-3-step-trip {
-				temperature = <60000>;
+				temperature = <95000>;
 			};
 		};
 	};
