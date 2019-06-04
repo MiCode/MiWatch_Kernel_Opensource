@@ -54,6 +54,8 @@
 #define BGRSB_POWER_DISABLE 0
 #define BGRSB_GLINK_POWER_ENABLE 6
 #define BGRSB_GLINK_POWER_DISABLE 7
+#define BGRSB_IN_TWM 8
+#define BGRSB_OUT_TWM 9
 
 #define FILE_CROWN_KEY "/mnt/vendor/persist/crown_key"
 #define FILE_CROWNKEY_ENABLE "/sys/devices/platform/soc/soc:qcom,bg-rsb/enable"
@@ -144,10 +146,12 @@ struct bgrsb_priv {
 	bool is_calibrd;
 
 	bool is_cnfgrd;
+	bool blk_rsb_cmnds;
 };
 
 static void *bgrsb_drv;
 static int bgrsb_enable(struct bgrsb_priv *dev, bool enable);
+static bool is_in_twm;
 
 int bgrsb_send_input(struct event *evnt)
 {
@@ -425,6 +429,7 @@ static void bgrsb_bgdown_work(struct work_struct *work)
 	}
 
 	dev->is_cnfgrd = false;
+	dev->blk_rsb_cmnds = false;
 	pr_info("RSB current state is : %d\n", dev->bgrsb_current_state);
 
 	if (dev->bgrsb_current_state == BGRSB_STATE_INIT) {
@@ -464,6 +469,8 @@ static void bgrsb_glink_bgdown_work(struct work_struct *work)
 	}
 
 	dev->is_cnfgrd = false;
+	if (is_in_twm)
+		dev->blk_rsb_cmnds = true;
 
 	if (dev->handle)
 		glink_close(dev->handle);
@@ -866,16 +873,19 @@ static int split_bg_work(struct bgrsb_priv *dev, char *str)
 		dev->bttn_configs = (uint8_t)val;
 		queue_work(dev->bgrsb_wq, &dev->bttn_configr_work);
 		break;
+	case BGRSB_IN_TWM:
+		is_in_twm = true;
 	case BGRSB_GLINK_POWER_DISABLE:
 		queue_work(dev->bgrsb_wq, &dev->rsb_glink_down_work);
 		break;
+	case BGRSB_OUT_TWM:
+		is_in_twm = false;
 	case BGRSB_GLINK_POWER_ENABLE:
 		queue_work(dev->bgrsb_wq, &dev->rsb_glink_up_work);
 		break;
 	}
 	return 0;
 }
-
 static int store_enable(struct device *pdev, struct device_attribute *attr,
 		const char *buff, size_t count)
 {
@@ -885,6 +895,12 @@ static int store_enable(struct device *pdev, struct device_attribute *attr,
 
 	if (!arr)
 		return -ENOMEM;
+
+	if (dev->blk_rsb_cmnds) {
+		pr_err("Device is in TWM state\n");
+		kfree(arr);
+		return count;
+	}
 
 	if (!dev->is_cnfgrd) {
 		kfree(arr);
