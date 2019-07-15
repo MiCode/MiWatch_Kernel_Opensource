@@ -825,6 +825,7 @@ static void mdss_dsi_panel_bl_ctrl(struct mdss_panel_data *pdata,
 	struct mdss_dsi_ctrl_pdata *ctrl_pdata = NULL;
 	struct mdss_dsi_ctrl_pdata *sctrl = NULL;
 
+	pr_err("sun6009202013 %s bl_level=%d\n", __func__, bl_level);
 	if (pdata == NULL) {
 		pr_err("%s: Invalid input data\n", __func__);
 		return;
@@ -930,6 +931,7 @@ static int mdss_dsi_panel_on(struct mdss_panel_data *pdata)
 
 	if (on_cmds->cmd_cnt)
 		mdss_dsi_panel_cmds_send(ctrl, on_cmds, CMD_REQ_COMMIT);
+	pr_err("sun6009202013 %s on_cmds->cmd_cnt=%d\n", __func__, on_cmds->cmd_cnt);
 
 	if (pinfo->compression_mode == COMPRESSION_DSC)
 		mdss_dsi_panel_dsc_pps_send(ctrl, pinfo);
