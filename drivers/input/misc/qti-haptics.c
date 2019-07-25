@@ -241,6 +241,7 @@ struct qti_hap_chip {
 	bool				play_irq_en;
 	bool				vdd_enabled;
 	bool				long_wave_append_support;
+	bool				allow_short_wave_overdrive;
 };
 
 static int wf_repeat[8] = {1, 2, 4, 8, 16, 32, 64, 128};
@@ -902,6 +903,8 @@ static int qti_haptics_upload_effect(struct input_dev *dev,
 		tmp = level * chip->predefined[i].vmax_mv;
 		play->vmax_mv = tmp / 0x7fff;
 
+		if(chip->allow_short_wave_overdrive)
+			play->vmax_mv = chip->predefined[i].vmax_mv;
 		dev_dbg(chip->dev, "upload effect %d, vmax_mv=%d\n",
 				chip->predefined[i].id, play->vmax_mv);
 		rc = qti_haptics_load_predefined_effect(chip, i);
@@ -1342,6 +1345,9 @@ static int qti_haptics_parse_dt(struct qti_hap_chip *chip)
 		rc = of_property_read_u32(node, "qcom,lra-long-wave-add-vmax-mv", &tmp);
 		if (!rc)
 			config->lra_long_wave_add_vmax_mv = tmp;
+
+		chip->allow_short_wave_overdrive = of_property_read_bool(
+				node, "qcom,lra-allow-short-wave-overdrive");
 
 		chip->long_wave_append_support = of_property_read_bool(
 				node, "qcom,lra-long-wave-append-support");
