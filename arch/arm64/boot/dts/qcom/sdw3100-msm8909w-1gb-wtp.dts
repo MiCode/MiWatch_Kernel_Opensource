@@ -206,10 +206,10 @@
 		interrupt-parent = <&msm_gpio>;
 		interrupts = <50 0>;
 		interrupt-names = "nfc_irq";
-		pinctrl-names = "nfc_active","nfc_suspend";
-		pinctrl-0 = <&nfcw_int_active &nfcw_disable_active
-						&nfc_clk_default>;
+		pinctrl-names = "nfc_active","nfc_suspend","default";
+		pinctrl-0 = <&nfcw_int_active &nfcw_disable_active>;
 		pinctrl-1 = <&nfcw_int_suspend &nfcw_disable_suspend>;
+		pinctrl-2 = <&nfc_clk_default>;
 		clocks = <&clock_rpm clk_bb_clk3_pin>;
 		clock-names = "ref_clk";
 	};
