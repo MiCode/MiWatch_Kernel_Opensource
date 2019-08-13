@@ -939,6 +939,10 @@ static ssize_t mdss_fb_set_hbm(struct device *dev,struct device_attribute *attr,
 			if (ctrl->hbm_on_cmds.cmd_cnt){
 				mdss_dsi_panel_cmds_send(ctrl, &ctrl->hbm_on_cmds,CMD_REQ_COMMIT);
 			}
+			msleep(5000);
+			if (ctrl->hbm_off_cmds.cmd_cnt){
+				mdss_dsi_panel_cmds_send(ctrl, &ctrl->hbm_off_cmds,CMD_REQ_COMMIT);
+			}
 			break;
 		case 0x2: //hbm off
 			if (ctrl->hbm_off_cmds.cmd_cnt){
