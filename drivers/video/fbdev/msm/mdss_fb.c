@@ -906,6 +906,8 @@ static ssize_t mdss_fb_get_persist_mode(struct device *dev,
 	return ret;
 }
 
+#ifdef CONFIG_LCD_HBM_FEATURE
+static int enter_hbm_send_cmd;
 static ssize_t mdss_fb_set_hbm(struct device *dev,struct device_attribute *attr,const char *buf,size_t len)
 {
 	struct fb_info *fbi = dev_get_drvdata(dev);
@@ -936,12 +938,18 @@ static ssize_t mdss_fb_set_hbm(struct device *dev,struct device_attribute *attr,
 
 	switch(param) {
 		case 0x1: //hbm on
-			if (ctrl->hbm_on_cmds.cmd_cnt){
-				mdss_dsi_panel_cmds_send(ctrl, &ctrl->hbm_on_cmds,CMD_REQ_COMMIT);
-			}
-			msleep(5000);
-			if (ctrl->hbm_off_cmds.cmd_cnt){
-				mdss_dsi_panel_cmds_send(ctrl, &ctrl->hbm_off_cmds,CMD_REQ_COMMIT);
+			if(!enter_hbm_send_cmd)
+			{
+				enter_hbm_send_cmd=1;
+				if (ctrl->hbm_on_cmds.cmd_cnt){
+					mdss_dsi_panel_cmds_send(ctrl, &ctrl->hbm_on_cmds,CMD_REQ_COMMIT);
+				}
+				msleep(5000); //5s
+				if (ctrl->hbm_off_cmds.cmd_cnt){
+					mdss_dsi_panel_cmds_send(ctrl, &ctrl->hbm_off_cmds,CMD_REQ_COMMIT);
+				}
+				msleep(55000); //55s
+				enter_hbm_send_cmd=0;
 			}
 			break;
 		case 0x2: //hbm off
@@ -957,6 +965,7 @@ static ssize_t mdss_fb_set_hbm(struct device *dev,struct device_attribute *attr,
 	return len;
 
 }
+#endif
 
 static ssize_t mdss_fb_idle_pc_notify(struct device *dev,
 		struct device_attribute *attr, char *buf)
@@ -985,7 +994,9 @@ static DEVICE_ATTR(measured_fps, 0664,
 static DEVICE_ATTR(msm_fb_persist_mode, 0644,
 	mdss_fb_get_persist_mode, mdss_fb_change_persist_mode);
 static DEVICE_ATTR(idle_power_collapse, 0444, mdss_fb_idle_pc_notify, NULL);
+#ifdef CONFIG_LCD_HBM_FEATURE
 static DEVICE_ATTR(msm_fb_hbm, 0644, NULL, mdss_fb_set_hbm);
+#endif
 
 static struct attribute *mdss_fb_attrs[] = {
 	&dev_attr_msm_fb_type.attr,
@@ -1001,7 +1012,9 @@ static struct attribute *mdss_fb_attrs[] = {
 	&dev_attr_measured_fps.attr,
 	&dev_attr_msm_fb_persist_mode.attr,
 	&dev_attr_idle_power_collapse.attr,
+#ifdef CONFIG_LCD_HBM_FEATURE
 	&dev_attr_msm_fb_hbm.attr,
+#endif
 	NULL,
 };
 

@@ -261,6 +261,7 @@ void kernel_power_off(void)
 {
 #ifdef CONFIG_LCD_RESET_HIGH_FOR_TOUCH_WAKE
 	lcd_reset_high = 0;
+	pr_err("sun6009202013 %s %d lcd_reset_high=%d", __func__, __LINE__, lcd_reset_high);
 #endif
 	kernel_shutdown_prepare(SYSTEM_POWER_OFF);
 	if (pm_power_off_prepare)
