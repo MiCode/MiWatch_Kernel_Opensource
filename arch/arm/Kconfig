@@ -114,6 +114,11 @@ config ARM_DMA_USE_IOMMU
 	select ARM_HAS_SG_CHAIN
 	select NEED_SG_DMA_LENGTH
 
+config KERNEL_CUSTOM_ROLLER
+    default n
+        bool "Custom for hardware ROLLER"
+	    help
+	            Custom for ROLLER.
 if ARM_DMA_USE_IOMMU
 
 config ARM_DMA_IOMMU_ALIGNMENT

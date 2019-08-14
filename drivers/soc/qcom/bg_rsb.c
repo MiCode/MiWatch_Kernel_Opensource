@@ -548,17 +548,35 @@ err_ret:
 static int bgrsb_enable(struct bgrsb_priv *dev, bool enable)
 {
 	int rc = 0;
+	struct bgrsb_msg req = {0};
+#if !defined(CONFIG_KERNEL_CUSTOM_ROLLER)
 	int ret = 0;
 	struct file *fp_read = NULL;
 	struct file *fp_write = NULL;
 	mm_segment_t old_fs;
 	char buf[10] ="0";
-	struct bgrsb_msg req = {0};
+
+#endif
 
 	req.cmd_id = 0x02;
 	req.data = enable ? 0x01 : 0x00;
 
 	rc = bgrsb_tx_msg(dev, &req, BGRSB_MSG_SIZE);
+#if defined(CONFIG_KERNEL_CUSTOM_ROLLER)
+	req.cmd_id = 0x03;
+	req.data = 0x65;//set report rate 101
+pr_err("lct will set report rate 101");
+	rc = bgrsb_tx_msg(dev, &req, 5);
+	if (rc != 0) {
+		pr_err("lct Failed to send resolution value to BG\n");
+	}
+	req.cmd_id = 0x04;
+	req.data = 0xD;//default 13
+	rc = bgrsb_tx_msg(dev, &req, 5);
+	if (rc != 0) {
+		pr_err("lct Failed to send interval value to BG\n");
+	}
+#else
 	fp_read = filp_open(FILE_CROWN_KEY,O_RDONLY,0);
 	if(IS_ERR(fp_read))
 	{
@@ -580,7 +598,7 @@ static int bgrsb_enable(struct bgrsb_priv *dev, bool enable)
 	vfs_write(fp_write,buf,sizeof(buf),&fp_write->f_pos);
 	filp_close(fp_write,NULL);
 	set_fs(old_fs);
-
+#endif
 	return rc;
 }
 
