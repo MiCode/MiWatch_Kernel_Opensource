@@ -148,39 +148,6 @@ struct bgrsb_priv {
 	bool blk_rsb_cmnds;
 	bool pending_enable;
 };
-#if defined(CONFIG_KERNEL_CUSTOM_ROLLER)
-static long start_timestamp = 0;
-static int event_count = 0;
-#define EVENTCOUNT_OVERRIDE 1024
-#define EVENTCOUNT_EFFECT_VALUE 3
-#define EVENTCOUNT_EFFECT_DURING 50
-
-static int snakefilter(void)
-{
-	long during = get_jiffies_64() - start_timestamp;
-
-	if(start_timestamp == 0){
-		start_timestamp = get_jiffies_64();
-		event_count++;
-	}else{
-		if(during < EVENTCOUNT_EFFECT_DURING ){
-			event_count++;
-			if(event_count > EVENTCOUNT_OVERRIDE){
-				event_count = EVENTCOUNT_EFFECT_VALUE + 1;
-			}
-		}else{
-			event_count = 1;
-		}
-		start_timestamp = get_jiffies_64();
-	}
-	if(event_count > EVENTCOUNT_EFFECT_VALUE){
-		return 1;
-	}
-	pr_err("snakefilter skip this input \n ");
-	return 0;
-
-}
-#endif
 
 static void *bgrsb_drv;
 static int bgrsb_enable(struct bgrsb_priv *dev, bool enable);
@@ -198,15 +165,8 @@ int bgrsb_send_input(struct event *evnt)
 		return -EINVAL;
 
 	if (evnt->sub_id == 1) {
-#if defined(CONFIG_KERNEL_CUSTOM_ROLLER)
-		if (snakefilter() == 1){
-			input_report_rel(dev->input, REL_WHEEL, evnt->evnt_data);
-			input_sync(dev->input);
-		}
-#else
-			input_report_rel(dev->input, REL_WHEEL, evnt->evnt_data);
-			input_sync(dev->input);
-#endif
+		input_report_rel(dev->input, REL_WHEEL, evnt->evnt_data);
+		input_sync(dev->input);
 	} else if (evnt->sub_id == 2) {
 
 		press_code = (uint8_t) evnt->evnt_data;
@@ -604,7 +564,7 @@ static int bgrsb_enable(struct bgrsb_priv *dev, bool enable)
 	rc = bgrsb_tx_msg(dev, &req, BGRSB_MSG_SIZE);
 #if defined(CONFIG_KERNEL_CUSTOM_ROLLER)
 	req.cmd_id = 0x03;
-	req.data = 0x65;//set report rate 101
+	req.data = 30;//set report rate 101
 pr_err("lct will set report rate 101");
 	rc = bgrsb_tx_msg(dev, &req, 5);
 	if (rc != 0) {
