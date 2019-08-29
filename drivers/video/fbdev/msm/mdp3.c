@@ -1464,7 +1464,6 @@ int mdp3_get_img(struct msmfb_data *img, struct mdp3_img_data *data, int client)
 	struct ion_client *iclient = mdp3_res->ion_client;
 	int dom = mdp3_get_domain(data->flags);
 
-	data->flags = img->flags;
 	data->flags |= img->flags;
 	data->offset = img->offset;
 
