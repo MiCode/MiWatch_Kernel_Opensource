@@ -1,0 +1,46 @@
+/dts-v1/;
+
+#include "sa515m-v2.dtsi"
+#include "sa515m-ccard.dtsi"
+
+/ {
+	model = "Qualcomm Technologies, Inc. SA515M CCARD PCIE-EP V2";
+	compatible = "qcom,sa515m-ccard",
+		"qcom,sa515m", "qcom,ccard";
+	qcom,board-id = <25 1>, <25 0x101>;
+};
+
+&pcie0 {
+	status = "disabled";
+};
+
+&pcie_ep {
+	status = "ok";
+};
+
+&ipa_hw {
+	qcom,use-ipa-in-mhi-mode;
+	qcom,mhi-event-ring-id-limits = <7 13>; /* start and end */
+	ipa_smmu_ap: ipa_smmu_ap {
+		qcom,iommu-dma = "bypass";
+	};
+
+	ipa_smmu_wlan: ipa_smmu_wlan {
+		qcom,iommu-dma = "bypass";
+	};
+
+	ipa_smmu_uc: ipa_smmu_uc {
+		qcom,iommu-dma = "bypass";
+	};
+};
+
+&mhi_device {
+	reg = <0x1c03000 0x1000>,
+		<0x1e15000 0x4>,
+		<0x1e15138 0x4>;
+	status = "ok";
+};
+
+&mhi_net_device {
+	status = "ok";
+};

@@ -1,0 +1,6 @@
+#include "sa515m-v2.dtsi"
+#include "sdx55-mtp.dtsi"
+
+&vbus_detect {
+	status = "okay";
+};

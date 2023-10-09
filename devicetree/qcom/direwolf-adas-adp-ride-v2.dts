@@ -1,0 +1,11 @@
+/dts-v1/;
+
+#include "direwolf-adas-v2.dtsi"
+#include "direwolf-adp-ride.dtsi"
+
+/ {
+	model = "Qualcomm Technologies, Inc. DirewolfAU ADAS V2 ADP-Ride";
+	compatible = "qcom,direwolf-adas-adp-ride", "qcom,direwolf-adas",
+		"qcom,direwolf";
+	qcom,board-id = <0x02010019 0>;
+};

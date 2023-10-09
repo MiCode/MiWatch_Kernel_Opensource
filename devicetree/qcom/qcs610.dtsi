@@ -1,0 +1,266 @@
+#include "sm6150.dtsi"
+#include "display/sm6150-sde-display.dtsi"
+#include "sm6150-pmic-overlay.dtsi"
+#include "sm6150-audio.dtsi"
+/ {
+	model = "Qualcomm Technologies, Inc. QCS610";
+	qcom,msm-name = "QCS610";
+	qcom,msm-id = <401 0>;
+};
+
+&aliases {
+	swr0 = &swr0;
+	swr1 = &swr1;
+	swr2 = &swr2;
+};
+
+&soc {
+	qcom,memshare {
+		compatible = "qcom,memshare";
+
+		qcom,client_1 {
+			compatible = "qcom,memshare-peripheral";
+			qcom,peripheral-size = <0x0>;
+			qcom,client-id = <0>;
+			qcom,allocate-boot-time;
+			label = "modem";
+		};
+
+		qcom,client_2 {
+			compatible = "qcom,memshare-peripheral";
+			qcom,peripheral-size = <0x0>;
+			qcom,client-id = <2>;
+			label = "modem";
+		};
+
+		qcom,client_3 {
+			compatible = "qcom,memshare-peripheral";
+			qcom,peripheral-size = <0x500000>;
+			qcom,client-id = <1>;
+			qcom,allocate-on-request;
+			label = "modem";
+		};
+	};
+
+	pil_modem: qcom,mss@4080000 {
+		compatible = "qcom,pil-tz-generic";
+		reg = <0x4080000 0x100>;
+
+		clocks = <&rpmhcc RPMH_CXO_CLK>;
+		clock-names = "xo";
+		qcom,proxy-clock-names = "xo";
+
+		vdd_cx-supply = <&VDD_CX_LEVEL>;
+		qcom,vdd_cx-uV-uA = <RPMH_REGULATOR_LEVEL_TURBO 100000>;
+		vdd_mss-supply = <&VDD_MSS_LEVEL>;
+		qcom,vdd_mss-uV-uA = <RPMH_REGULATOR_LEVEL_TURBO 100000>;
+		qcom,proxy-reg-names = "vdd_cx", "vdd_mss";
+
+		qcom,firmware-name = "modem";
+		memory-region = <&pil_modem_mem>;
+		qcom,proxy-timeout-ms = <10000>;
+		qcom,sysmon-id = <0>;
+		qcom,ssctl-instance-id = <0x12>;
+		qcom,pas-id = <4>;
+		qcom,smem-id = <421>;
+		qcom,signal-aop;
+		qcom,minidump-id = <3>;
+		qcom,aux-minidump-ids = <4>;
+		qcom,complete-ramdump;
+
+		/* Inputs from mss */
+		interrupts-extended = <&intc 0 266 1>,
+				<&modem_smp2p_in 0 0>,
+				<&modem_smp2p_in 2 0>,
+				<&modem_smp2p_in 1 0>,
+				<&modem_smp2p_in 3 0>,
+				<&modem_smp2p_in 7 0>;
+
+		interrupt-names = "qcom,wdog",
+				"qcom,err-fatal",
+				"qcom,proxy-unvote",
+				"qcom,err-ready",
+				"qcom,stop-ack",
+				"qcom,shutdown-ack";
+
+		/* Outputs to mss */
+		qcom,smem-states = <&modem_smp2p_out 0>;
+		qcom,smem-state-names = "qcom,force-stop";
+
+		mboxes = <&qmp_aop 0>;
+		mbox-names = "mss-pil";
+	};
+
+	bluetooth: bt_wcn3990 {
+		compatible = "qcom,wcn3990";
+		qcom,bt-sw-ctrl-gpio = <&tlmm 80 GPIO_ACTIVE_HIGH>;
+		qcom,bt-vdd-io-supply = <&pm6150_l10>; /* IO */
+		qcom,bt-vdd-core-supply = <&pm6150l_l2>; /* RFA */
+		qcom,bt-vdd-pa-supply = <&pm6150l_l10>; /* CH0 */
+		qcom,bt-vdd-xtal-supply = <&pm6150l_l1>; /* XO */
+
+		qcom,bt-vdd-io-config = <1700000 1900000 1 0>;
+		qcom,bt-vdd-core-config = <1304000 1304000 1 0>;
+		qcom,bt-vdd-pa-config = <3000000 3312000 1 0>;
+		qcom,bt-vdd-xtal-config = <1700000 1900000 1 0>;
+	};
+
+	qcom,ipa_fws {
+		compatible = "qcom,pil-tz-generic";
+		qcom,pas-id = <0xf>;
+		qcom,firmware-name = "ipa_fws";
+		qcom,pil-force-shutdown;
+		memory-region = <&pil_ipa_fw_mem>;
+	};
+
+	icnss: qcom,icnss@18800000 {
+		compatible = "qcom,icnss";
+		reg = <0x18800000 0x800000>,
+		      <0xb0000000 0x10000>;
+		reg-names = "membase", "smmu_iova_ipa";
+		iommus = <&apps_smmu 0x1640 0x1>;
+		interrupts = <GIC_SPI 414 IRQ_TYPE_LEVEL_HIGH /* CE0 */ >,
+			     <GIC_SPI 415 IRQ_TYPE_LEVEL_HIGH /* CE1 */ >,
+			     <GIC_SPI 416 IRQ_TYPE_LEVEL_HIGH /* CE2 */ >,
+			     <GIC_SPI 417 IRQ_TYPE_LEVEL_HIGH /* CE3 */ >,
+			     <GIC_SPI 418 IRQ_TYPE_LEVEL_HIGH /* CE4 */ >,
+			     <GIC_SPI 419 IRQ_TYPE_LEVEL_HIGH /* CE5 */ >,
+			     <GIC_SPI 420 IRQ_TYPE_LEVEL_HIGH /* CE6 */ >,
+			     <GIC_SPI 421 IRQ_TYPE_LEVEL_HIGH /* CE7 */ >,
+			     <GIC_SPI 422 IRQ_TYPE_LEVEL_HIGH /* CE8 */ >,
+			     <GIC_SPI 423 IRQ_TYPE_LEVEL_HIGH /* CE9 */ >,
+			     <GIC_SPI 424 IRQ_TYPE_LEVEL_HIGH /* CE10 */ >,
+			     <GIC_SPI 425 IRQ_TYPE_LEVEL_HIGH /* CE11 */ >;
+
+		qcom,iommu-dma = "fastmap";
+		qcom,iommu-faults = "stall-disable", "HUPCF", "non-fatal";
+		qcom,iommu-dma-addr-pool = <0xa0000000 0x10000000>;
+		qcom,wlan-msa-fixed-region = <&wlan_msa_mem>;
+
+		vdd-cx-mx-supply = <&pm6150_l9>;
+		vdd-1.8-xo-supply = <&pm6150l_l1>;
+		vdd-1.3-rfa-supply = <&pm6150l_l2>;
+		vdd-3.3-ch0-supply = <&pm6150l_l10>;
+		qcom,vdd-cx-mx-config = <640000 640000>;
+		qcom,is_low_power = <1>;
+		qcom,smp2p_map_wlan_1_in {
+			interrupts-extended = <&smp2p_wlan_1_in 0 0>,
+					      <&smp2p_wlan_1_in 1 0>;
+			interrupt-names = "qcom,smp2p-force-fatal-error",
+					  "qcom,smp2p-early-crash-ind";
+		};
+
+	};
+
+	eud: qcom,msm-eud@88e0000 {
+		compatible = "qcom,msm-eud";
+		interrupt-names = "eud_irq";
+		interrupts = <GIC_SPI 492 IRQ_TYPE_LEVEL_HIGH>;
+		reg = <0x88e0000 0x2000>,
+		      <0x88e4000 0x1000>;
+		reg-names = "eud_base", "eud_mode_mgr2";
+		qcom,secure-eud-en;
+		qcom,eud-clock-vote-req;
+		clocks = <&gcc GCC_AHB2PHY_WEST_CLK>;
+		clock-names = "eud_ahb2phy_clk";
+		status = "ok";
+	};
+
+	qcom_cedev: qcedev@1de0000 {
+		compatible = "qcom,qcedev";
+		reg = <0x1de0000 0x20000>,
+			<0x1dc4000 0x24000>;
+		reg-names = "crypto-base","crypto-bam-base";
+		interrupts = <GIC_SPI 272 IRQ_TYPE_LEVEL_HIGH>;
+		qcom,bam-pipe-pair = <3>;
+		qcom,ce-hw-instance = <0>;
+		qcom,ce-device = <0>;
+		qcom,ce-hw-shared;
+		qcom,bam-ee = <0>;
+		qcom,smmu-s1-enable;
+		qcom,no-clock-support;
+		interconnect-names = "data_path";
+		interconnects = <&aggre1_noc MASTER_CRYPTO &mc_virt SLAVE_EBI1>;
+		iommus = <&apps_smmu 0x0106 0x0011>,
+			 <&apps_smmu 0x0116 0x0011>;
+		qcom,iommu-dma = "atomic";
+	};
+
+	qcom_crypto: qcrypto@1de0000 {
+		compatible = "qcom,qcrypto";
+		reg = <0x1de0000 0x20000>,
+			 <0x1dc4000 0x24000>;
+		reg-names = "crypto-base","crypto-bam-base";
+		interrupts = <GIC_SPI 272 IRQ_TYPE_LEVEL_HIGH>;
+		qcom,bam-pipe-pair = <2>;
+		qcom,ce-hw-instance = <0>;
+		qcom,ce-device = <0>;
+		qcom,bam-ee = <0>;
+		qcom,ce-hw-shared;
+		qcom,clk-mgmt-sus-res;
+		qcom,use-sw-aes-cbc-ecb-ctr-algo;
+		qcom,use-sw-aes-xts-algo;
+		qcom,use-sw-aes-ccm-algo;
+		qcom,use-sw-ahash-algo;
+		qcom,use-sw-aead-algo;
+		qcom,use-sw-hmac-algo;
+		qcom,smmu-s1-enable;
+		qcom,no-clock-support;
+		interconnect-names = "data_path";
+		interconnects = <&aggre1_noc MASTER_CRYPTO &mc_virt SLAVE_EBI1>;
+		iommus = <&apps_smmu 0x0104 0x0011>,
+			 <&apps_smmu 0x0114 0x0011>;
+		qcom,iommu-dma = "atomic";
+	};
+};
+
+&qupv3_se3_i2c {
+	status = "ok";
+	#include "smb1390.dtsi"
+
+	fsa4480: fsa4480@43 {
+		compatible = "qcom,fsa4480-i2c";
+		reg = <0x43>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&fsa_usbc_ana_en>;
+		status = "disabled";
+	};
+};
+
+&qupv3_se4_spi {
+	compatible = "qcom,spi-geni";
+	#address-cells = <1>;
+	#size-cells = <0>;
+	reg = <0xa80000 0x4000>;
+	reg-names = "se_phys";
+	clock-names = "se-clk", "m-ahb", "s-ahb";
+	clocks = <&gcc GCC_QUPV3_WRAP1_S0_CLK>,
+		<&gcc GCC_QUPV3_WRAP_1_M_AHB_CLK>,
+		<&gcc GCC_QUPV3_WRAP_1_S_AHB_CLK>;
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&qupv3_se4_spi_active>;
+	pinctrl-1 = <&qupv3_se4_spi_sleep>;
+	interrupts = <GIC_SPI 353 IRQ_TYPE_LEVEL_HIGH>;
+	spi-max-frequency = <50000000>;
+	qcom,wrapper-core = <&qupv3_1>;
+	dmas = <&gpi_dma1 0 0 1 64 0>,
+			<&gpi_dma1 1 0 1 64 0>;
+	dma-names = "tx", "rx";
+	status = "disabled";
+};
+
+&smb1390 {
+	/delete-property/ interrupts;
+	interrupts = <0x0 0xc2 0x0 IRQ_TYPE_LEVEL_LOW>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&smb_stat_default>;
+	status = "ok";
+};
+
+&smb1390_charger {
+	/delete-property/ compatible;
+	compatible = "qcom,smb1390-charger-psy";
+	io-channels = <&pm6150_vadc ADC5_AMUX_THM3>;
+	io-channel-names = "cp_die_temp";
+	status = "ok";
+};

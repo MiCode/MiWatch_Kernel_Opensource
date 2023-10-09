@@ -1,0 +1,9 @@
+/dts-v1/;
+
+#include "direwolf-ivi-v2.dtsi"
+
+/ {
+	model = "Qualcomm Technologies, Inc. DirewolfAU IVI V2 SoC";
+	compatible = "qcom,direwolf-ivi", "qcom,direwolf";
+	qcom,board-id = <0 0>;
+};

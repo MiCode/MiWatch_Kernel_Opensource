@@ -1,0 +1,8 @@
+/dts-v1/;
+
+#include "lemans-adas-high.dtsi"
+/ {
+	model = "Qualcomm Technologies, Inc. Lemans ADAS HIGH SoC";
+	compatible = "qcom,lemans-adas-high", "qcom,lemans";
+	qcom,board-id = <0 0>;
+};

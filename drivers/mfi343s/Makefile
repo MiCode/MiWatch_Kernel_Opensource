@@ -1,0 +1,1 @@
+obj-$(CONFIG_MFI343S00176_DEBUG)               += mfi343s00176.o

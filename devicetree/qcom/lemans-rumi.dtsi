@@ -1,0 +1,206 @@
+#include <dt-bindings/clock/qcom,gcc-lemans.h>
+
+&arch_timer {
+	clock-frequency = <500000>;
+};
+
+&memtimer {
+	clock-frequency = <500000>;
+};
+
+&qupv3_se9_2uart {
+	status = "ok";
+	qcom,rumi_platform;
+};
+
+&soc {
+	usb_emu_phy_0: usb_emu_phy@a784000 {
+		compatible = "qcom,usb-emu-phy";
+		reg = <0x0a784000 0x9500>;
+
+		qcom,emu-init-seq = <0xfffff 0x4
+				     0x2110010 0x34
+				     0x0110010 0x34
+				     0xffff3 0x4
+				     0xffff0 0x4
+				     0x100000 0x20
+				     0x0 0x20
+				     0x1A0 0x20
+				     0x100000 0x3c
+				     0x0 0x3c
+				     0x10060 0x3c
+				     0x0 0x4
+				     0x9 0x14>;
+	};
+
+	bi_tcxo: bi_tcxo {
+		compatible = "fixed-factor-clock";
+		clock-mult = <1>;
+		clock-div = <2>;
+		clocks = <&xo_board>;
+		clock-output-names = "bi_tcxo";
+		#clock-cells = <0>;
+	};
+
+	bi_tcxo_ao: bi_tcxo_ao {
+		compatible = "fixed-factor-clock";
+		clock-mult = <1>;
+		clock-div = <2>;
+		clocks = <&xo_board>;
+		clock-output-names = "bi_tcxo_ao";
+		#clock-cells = <0>;
+	};
+
+	pcie0: qcom,pcie@0x01c00000 {
+		compatible = "qcom,pci-msm";
+
+		reg = <0x01c00000 0x3000>,
+			<0x1c04000 0x2000>,
+			<0x40000000 0xf20>,
+			<0x40000f20 0xa8>,
+			<0x40001000 0x4000>,
+			<0x40100000 0x100000>,
+			<0x01c03000 0x1000>,
+			<0x01c04500 0x1000>;
+		reg-names = "parf", "phy", "dm_core", "elbi",
+				"iatu", "conf", "mhi", "rumi";
+
+		linux,pci-domain = <0>;
+		qcom,target-link-speed = <0x1>;
+		qcom,link-check-max-count = <200>; /* 1 sec */
+		qcom,no-l0s-supported;
+		qcom,no-l1-supported;
+		qcom,no-l1ss-supported;
+		qcom,no-aux-clk-sync;
+		status = "ok";
+	};
+
+	 pcie1: qcom,pcie@0x01c10000 {
+		compatible = "qcom,pci-msm";
+
+		reg = <0x01c10000 0x3000>,
+			<0x01c14000 0x4000>,
+			<0x60000000 0xf20>,
+			<0x60000f20 0xa8>,
+			<0x60001000 0x4000>,
+			<0x60100000 0x100000>,
+			<0x01c13000 0x1000>,
+			<0x01c14500 0x1000>;
+		reg-names = "parf", "phy", "dm_core", "elbi",
+				"iatu", "conf", "mhi", "rumi";
+
+		linux,pci-domain = <1>;
+		qcom,target-link-speed = <0x1>;
+		qcom,link-check-max-count = <200>; /* 1 sec */
+		qcom,no-l0s-supported;
+		qcom,no-l1-supported;
+		qcom,no-l1ss-supported;
+		qcom,no-aux-clk-sync;
+		status = "ok";
+	};
+};
+
+&usb0 {
+	dwc3@a600000 {
+		usb-phy = <&usb_emu_phy_0>, <&usb_nop_phy>;
+		maximum-speed = "high-speed";
+	};
+};
+
+&tsens0 {
+		status = "disabled";
+};
+
+&tsens1 {
+		status = "disabled";
+};
+
+&tsens2 {
+		status = "disabled";
+};
+
+&tsens3 {
+		status = "disabled";
+};
+
+&gcc {
+	clocks = <&bi_tcxo>, <&pcie_0_pipe_clk>, <&pcie_1_pipe_clk>,
+		 <&pcie_phy_aux_clk>, <&rxc0_ref_clk>, <&rxc1_ref_clk>,
+		 <&sleep_clk>, <&ufs_card_rx_symbol_0_clk>, <&ufs_card_rx_symbol_1_clk>,
+		 <&ufs_card_tx_symbol_0_clk>, <&ufs_phy_rx_symbol_0_clk>,
+		 <&ufs_phy_rx_symbol_1_clk>, <&ufs_phy_tx_symbol_0_clk>,
+		 <&usb3_phy_wrapper_gcc_usb30_prim_pipe_clk>,
+		 <&usb3_phy_wrapper_gcc_usb30_sec_pipe_clk>;
+};
+
+&camcc {
+	clocks = <&bi_tcxo>, <&gcc GCC_CAMERA_AHB_CLK>, <&sleep_clk>;
+};
+
+&videocc {
+	clocks = <&bi_tcxo>, <&gcc GCC_VIDEO_AHB_CLK>, <&sleep_clk>;
+};
+
+&gpucc {
+	clocks = <&bi_tcxo>, <&gcc GCC_GPU_CFG_AHB_CLK>,
+		 <&gcc GCC_GPU_GPLL0_CLK_SRC>, <&gcc GCC_GPU_GPLL0_DIV_CLK_SRC>;
+};
+
+&dispcc0 {
+	clocks = <&bi_tcxo>, <&bi_tcxo_ao>, <&sleep_clk>,
+		<&gcc GCC_DISP_AHB_CLK>;
+};
+
+&dispcc1 {
+	clocks = <&bi_tcxo>, <&bi_tcxo_ao>, <&sleep_clk>,
+		<&gcc GCC_DISP1_AHB_CLK>;
+};
+
+&rpmhcc {
+	compatible = "qcom,dummycc";
+	clock-output-names = "rpmhcc_clocks";
+};
+
+&debugcc {
+	clocks = <&bi_tcxo>;
+};
+
+&cpufreq_hw {
+	clocks = <&bi_tcxo>, <&gcc GCC_GPLL0>;
+};
+
+&ufsphy_mem {
+	compatible = "qcom,ufs-phy-qrbtc-sdm845";
+
+	vdda-phy-supply = <&L4A>;
+	vdda-pll-supply = <&L1C>;
+	vdda-phy-max-microamp = <137000>;
+	vdda-pll-max-microamp = <18300>;
+
+	status = "ok";
+};
+
+&ufshc_mem {
+
+	limit-tx-hs-gear = <1>;
+	limit-rx-hs-gear = <1>;
+	limit-rate = <1>; /* HS Rate-B */
+
+	vdd-hba-supply = <&gcc_ufs_phy_gdsc>;
+	vdd-hba-fixed-regulator;
+
+	vcc-supply = <&L8A>;
+	vcc-max-microamp = <800000>;
+
+	vccq-supply = <&L4C>;
+	vccq-max-microamp = <800000>;
+
+	qcom,vddp-ref-clk-supply = <&L4C>;
+	qcom,vddp-ref-clk-max-microamp = <100>;
+
+	qcom,disable-lpm;
+	rpm-level = <0>;
+	spm-level = <0>;
+
+	status = "ok";
+};

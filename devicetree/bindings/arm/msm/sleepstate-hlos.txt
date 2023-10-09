@@ -1,0 +1,12 @@
+Qualcomm Technologies, Inc. hlos_sleep_state driver using  SMSM framework.
+
+Required properties:
+-compatible : should be one of the following:
+- "qcom,smp2p-hlos_sleep_state"
+-qcom,smem-states : the relevant outgoing smp2p entry
+
+Example:
+qcom,hlos_sleep_state {
+	compatible = "qcom,smp2p-hlos_sleep_state";
+	qcom,smem-states = <&hlos_sleep_state_out 0>;
+};

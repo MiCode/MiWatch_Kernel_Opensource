@@ -1,0 +1,16 @@
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# UWB infrastructure and drivers
+#
+
+
+
+config QM35725_UWB
+	bool "UWB Support"
+	help
+	  This enables UWB support.
+	  You only need to enable this, if you also want to enable
+	  one or more of the UWB drivers below.
+
+	  If unsure, say N.
+

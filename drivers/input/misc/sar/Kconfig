@@ -1,0 +1,12 @@
+config INPUT_SENSOR_HX9031A
+	tristate "HX9031A based input"
+	depends on I2C
+	help
+	  Say Y here if you have a input interface using the
+	  HX9031A controller, and your board-specific initialization
+	  code includes that in its table of I2C devices.
+
+	  If unsure, say N (but it's safe to say "Y").
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called hx9031a.

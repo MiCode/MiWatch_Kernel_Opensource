@@ -1,0 +1,9 @@
+/dts-v1/;
+
+#include "qcs410.dtsi"
+
+/ {
+	model = "Qualcomm Technologies, Inc. QCS410 SoC";
+	compatible = "qcom,qcs410";
+	qcom,board-id = <0 0>;
+};

@@ -1,0 +1,53 @@
+%YAML 1.2
+---
+$id: http://devicetree.org/schemas/bindings/pil/subsys-pil-slate.yaml#
+$schema: http://devicetree.org/meta-schemas/core.yaml#
+
+title: Generic Subsystem Peripheral Image Loader
+
+
+description: |+
+  subsys-pil-slate is a generic peripheral image loader (PIL) driver. It is
+  used for loading the firmware images of the slate subsystems into internal
+  memory of slate SoC and preparing the subsystem's processor to execute code.
+  It's also responsible for restarting slate SoC when it's gets crashed.
+
+properties:
+  compatible:
+    oneOf:
+      - const: qcom,pil-slate
+        description:
+          For implementations specific to subsystem PIL nodes. Could be more
+          than one.
+
+      - const: qcom,pil-tz-scm-pas
+        description:
+          For specifically registering with the interconnect framework, in
+          order to satisfy the bandwidth requirements between the DDR and
+          the crypto engine. This is so that the secure world can validate
+          the PIL images. Only one node per device-tree is required.
+
+  qcom,firmware-name:
+    description: Base name of the firmware image.
+
+  qcom,bg2ap-status-gpio:
+	description: GPIO used by the blackghost to indicate status to the apps.
+  qcom,ap2bg-status-gpio:
+	description: GPIO used by the apps to indicate its status to blackghost.
+
+required:
+  - compatible
+  - qcom,firmware-name
+
+examples:
+  - |
+
+	qcom,slate {
+		compatible = "qcom,pil-slate";
+		qcom,pil-force-shutdown;
+		qcom,firmware-name = "slate-wear";
+		/* GPIO inputs from blackghost */
+		qcom,slate2ap-status-gpio = <&tlmm 17 0>;
+		/* GPIO output to blackghost */
+		qcom,ap2slate-status-gpio = <&tlmm 16 0>;
+	};

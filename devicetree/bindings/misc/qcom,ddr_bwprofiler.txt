@@ -1,0 +1,11 @@
+Required properties :
+- compatible : must be "qcom,ddr_bwprofiler"
+- clocks : generally be <&aopcc QDSS_CLK>
+- clock-names : must be "qdss_clk"
+
+Example :
+	ddr_bwprofiler {
+		compatible = "qcom,ddr_bwprofiler";
+		clocks = <&aopcc QDSS_CLK>;
+		clock-names = "qdss_clk";
+	};

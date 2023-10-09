@@ -1,0 +1,8 @@
+/dts-v1/;
+
+#include "lemans-adp-air.dtsi"
+
+/ {
+	model = "Qualcomm Technologies, Inc. Lemans ADP AIR";
+	compatible =  "qcom,lemans", "qcom,adp-air", "qcom,lemans-adp-air";
+};

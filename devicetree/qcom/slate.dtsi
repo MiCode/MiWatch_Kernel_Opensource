@@ -1,0 +1,269 @@
+#include <dt-bindings/sound/qcom,gpr.h>
+
+&soc {
+	qupv3_se4_spi: spi@4a90000 {  /* BLSP4 QUP3*/
+		status = "ok";
+		qcom,shared_ee;
+		qcom,slate-spi {
+			compatible = "qcom,slate-spi";
+			reg = <0>;
+			spi-max-frequency = <40000000>;
+			interrupt-parent = <&tlmm>;
+			qcom,irq-gpio = <&tlmm 95 1>;
+		};
+	};
+
+	qcom,slate {
+		compatible = "qcom,pil-slate";
+		qcom,pil-force-shutdown;
+		qcom,firmware-name = "slatefw";
+		/* GPIO inputs from blackghost */
+		qcom,slate2ap-status-gpio = <&tlmm 98 0>;
+		/* GPIO output to blackghost */
+		qcom,ap2slate-status-gpio = <&tlmm 97 0>;
+	};
+
+	qcom,slate-daemon {
+		compatible = "qcom,slate-daemon";
+	};
+
+	audio_cc_ipc_platform: qcom,audio-cc-ipc-platform {
+		compatible = "qcom,audio-cc-ipc-platform";
+		qcom,glink-cc-ipc = <&audio_ipc>, <&audio_ipc1>;
+		cc_codec: qcom,cc-codec {
+			compatible = "qcom,cc-codec";
+			qcom,service-id = <3>;
+			qcom,channel-name = "custom_cc_apps";
+			qcom,src-domain-id = <3>;
+			qcom,dst-domain-id = <6>;
+			qcom,src-port = <3>;
+			qcom,dst-port = <0x0F>;
+		};
+	};
+
+	qcom,glink-slatecom-xprt-slate {
+		compatible = "qcom,glink-slatecom-xprt";
+		label = "slate";
+
+		qcom,glink-slate-apps-diag-cntl {
+			qcom,glink-channels = "DIAG_SLATE_APPS_CNTL";
+			qcom,intents = <0x200 1>;
+		};
+
+		qcom,glink-slate-adsp-diag-cntl {
+			qcom,glink-channels = "DIAG_SLATE_ADSP_CNTL";
+			qcom,intents = <0x200 1>;
+		};
+
+		qcom,glink-slate-events-bridge {
+			qcom,glink-channels = "slate-event";
+			qcom,intents = <0x0181 1>;
+		};
+
+		qcom,glink-slatecom-ctrl {
+			qcom,glink-channels = "slate-ctrl";
+			qcom,intents = <0x0C 1>;
+		};
+
+		qcom,glink-slate-ux-ctl {
+			qcom,glink-channels = "slate-ux-ctl";
+			qcom,intents = <0x0C 1>;
+		};
+
+		qcom,glink-slatecom-qcli {
+			qcom,glink-channels = "slate-qcli";
+			qcom,intents = <0x0C 1>;
+			status = "ok";
+		};
+
+		qcom,glink-slate-rsb {
+			qcom,glink-channels = "slate-rsb-ctl";
+			qcom,intents = <0x0C 1>;
+		};
+
+		qcom,glinkpkt-slate-ssc-hal {
+			qcom,glink-channels = "ssc_hal";
+			qcom,intents = <0x2710 2
+					0x3E8  4>;
+			qcom,glink-xfer-debug = <20>;
+		};
+
+		qcom,glinkpkt-slate-sso-hal {
+			qcom,glink-channels = "sso_hal";
+			qcom,intents = <0x2710 2
+					0x3E8  2>;
+			qcom,glink-xfer-debug = <20>;
+		};
+
+		qcom,glinkpkt-slate-cam-hal {
+			qcom,glink-channels = "cam_hal";
+			qcom,intents = <0x2710 2
+					0x3E8  2>;
+		};
+
+		qcom,glinkpkt-slate-ssc-usta {
+			qcom,glink-channels = "ssc_usta";
+			qcom,intents = <0x2710 2
+					0x3E8  2>;
+		};
+
+		qcom,glink-slate-display-ctrl {
+			qcom,glink-channels = "display-ctrl";
+			qcom,intents = <0x38 1>;
+		};
+
+		qcom,glink-slate-display-data  {
+			qcom,glink-channels = "display-data";
+			qcom,intents = <0x10 1>;
+		};
+
+		qcom,glinkpkt-slate-ssc-test-0 {
+			qcom,glink-channels = "ssc_test_0";
+			qcom,intents = <0x2710 2
+					0x3E8  2>;
+		};
+
+		qcom,glinkpkt-slate-ssc-test-1 {
+			qcom,glink-channels = "ssc_test_1";
+			qcom,intents = <0x2710 2
+					0x3E8  2>;
+		};
+
+		qcom,glinkpkt-slate-ssc-test-2 {
+			qcom,glink-channels = "ssc_test_2";
+			qcom,intents = <0x2710 2
+					0x3E8  2>;
+		};
+
+		qcom,glinkpkt-slate-ssc-test-3 {
+			qcom,glink-channels = "ssc_test_3";
+			qcom,intents = <0x2710 2
+					0x3E8  2>;
+		};
+
+		qcom,glinkpkt-slate-ssc-test-4 {
+			qcom,glink-channels = "ssc_test_4";
+			qcom,intents = <0x2710 2
+					0x3E8  2>;
+		};
+
+		qcom,glinkpkt-slate-ssc-test-5 {
+			qcom,glink-channels = "ssc_test_5";
+			qcom,intents = <0x2710 2
+					0x3E8  2>;
+		};
+
+		qcom,glinkpkt-slate-ssc-test-6 {
+			qcom,glink-channels = "ssc_test_6";
+			qcom,intents = <0x2710 2
+					0x3E8  2>;
+		};
+
+		qcom,glinkpkt-slate-ssc-test-7 {
+			qcom,glink-channels = "ssc_test_7";
+			qcom,intents = <0x2710 2
+					0x3E8  2>;
+		};
+
+		qcom,glinkpkt-slate-ssc-test-8 {
+			qcom,glink-channels = "ssc_test_8";
+			qcom,intents = <0x2710 2
+					0x3E8  2>;
+		};
+
+		qcom,glinkpkt-slate-ssc-test-9 {
+			qcom,glink-channels = "ssc_test_9";
+			qcom,intents = <0x2710 2
+					0x3E8  2>;
+		};
+
+		qcom,glinkpkt-slate-ssc-test-10 {
+			qcom,glink-channels = "ssc_test_10";
+			qcom,intents = <0x2710 2
+					0x3E8  2>;
+		};
+
+		qcom,glinkpkt-slate-ssc-test-11 {
+			qcom,glink-channels = "ssc_test_11";
+			qcom,intents = <0x2710 2
+					0x3E8  2>;
+		};
+
+		qcom,glinkpkt-slate-ssc-test-12 {
+			qcom,glink-channels = "ssc_test_12";
+			qcom,intents = <0x2710 2
+					0x3E8  2>;
+		};
+
+		qcom,glinkpkt-slate-ssc-test-13 {
+			qcom,glink-channels = "ssc_test_13";
+			qcom,intents = <0x2710 2
+					0x3E8  2>;
+		};
+
+		qcom,glinkpkt-slate-ssc-test-14 {
+			qcom,glink-channels = "ssc_test_14";
+			qcom,intents = <0x2710 2
+					0x3E8  2>;
+		};
+
+		qcom,glink-slate-bt-ctrl {
+			qcom,glink-channels = "slate_bt_ctrl";
+			qcom,intents = <0x50 1>;
+		};
+
+		qcom,glink-bt-offload-event {
+			qcom,glink-channels = "bt_offload_event";
+			qcom,intents = <0x50 1>;
+		};
+
+		qcom,glinkpkt-bt-app-offload-data {
+			qcom,glink-channels = "slate_bt_app";
+			qcom,intents = <0xF2F8 1>;
+		};
+
+		audio_ipc: qcom,audio_cc_ipc {
+			compatible = "qcom,audio_cc_ipc";
+			qcom,glink-channels = "gpr_cc_apps";
+			qcom,intents = <0x2000 2>;
+			reg = <GPR_DOMAIN_CC_DSP>;
+			cdev_name = "gpr_channel";
+		};
+
+		audio_ipc1: qcom,audio_cc_ipc1 {
+			compatible = "qcom,audio_cc_ipc";
+			qcom,glink-channels = "custom_cc_apps";
+			qcom,intents = <0x2000 2>;
+			reg = <GPR_DOMAIN_CC_DSP>;
+			cdev_name = "nongpr_channel";
+		};
+	};
+
+	qcom,slatecom-rpmsg {
+		compatible = "qcom,slatecom-rpmsg";
+		qcom,glink-channels = "slate-ctrl";
+		qcom,glinkpkt-edge = "slate";
+		intents = <0x200 20>;
+	};
+
+	qcom,slate-events-bridge {
+		compatible = "qcom,slate-events-bridge";
+	};
+
+	qcom,slate-events-bridge-rpmsg {
+		compatible = "qcom,slate-events-bridge-rpmsg";
+		qcom,glink-channels = "slate-event";
+		qcom,glinkpkt-edge = "slate";
+	};
+
+	qcom,slate-rsb {
+		compatible = "qcom,slate-rsb";
+	};
+
+	qcom,slatersb-rpmsg {
+		compatible = "qcom,slatersb-rpmsg";
+		qcom,glink-channels = "slate-rsb-ctl";
+		qcom,glinkpkt-edge = "slate";
+		intents = <0x200 1>;
+	};
+};

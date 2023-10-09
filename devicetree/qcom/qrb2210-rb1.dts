@@ -1,0 +1,10 @@
+/dts-v1/;
+
+#include "scuba.dtsi"
+#include "scuba-qrd.dtsi"
+
+/ {
+	model = "Qualcomm Technologies, Inc. Scuba QRD";
+	compatible = "qcom,scuba";
+	qcom,board-id = <0x0501000B 0x0>;
+};

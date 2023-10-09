@@ -1,0 +1,40 @@
+/ {
+	/delete-node/ cpus;
+};
+
+&hab {
+	vmid = <3>;
+};
+
+&reserved_memory {
+	pmem_shared: pmem_shared_region {
+		reg = <0x1 0x2c200000 0x0 0x53e00000>;
+		label = "pmem_shared_mem";
+	};
+};
+
+#include "display/quin-vm-display-lv.dtsi"
+
+&usb0 {
+	status = "disabled";
+};
+
+&usb2_phy0 {
+	status = "disabled";
+};
+
+&pcie0_msi {
+	status = "disabled";
+};
+
+&pcie0 {
+	status = "disabled";
+};
+
+&qupv3_se13_4uart {
+	status = "disabled";
+};
+
+&cnss_pcie {
+	status = "disabled";
+};

@@ -1,0 +1,10 @@
+/dts-v1/;
+
+#include "monaco.dtsi"
+#include "monaco-idp-v2.1.dtsi"
+
+/ {
+	model = "Qualcomm Technologies, Inc. Monaco Aon IDP V2.1";
+	compatible = "qcom,monaco", "qcom,idp";
+	qcom,board-id = <0x020122 0x0>;
+};

@@ -1,0 +1,15 @@
+#include "monaco.dtsi"
+
+/ {
+	reserved-memory {
+		/delete-node/oda_region@45700000;
+	};
+};
+
+&removed_region {
+	reg = <0x0 0x60e00000 0x0 0x01100000>;
+};
+
+&xbl_aop_mem {
+	reg = <0x0 0x45e00000 0x0 0x110000>;
+};

@@ -1,0 +1,12 @@
+/dts-v1/;
+/plugin/;
+
+#include "sa8155-adp-pcie-ep-air.dtsi"
+#include "display/sa8155-adp-star-display-shd.dtsi"
+
+/ {
+	model = "SA8155P V2 ADP PCIe EP AIR";
+	compatible = "qcom,sa8155p-v2-adp-pcie-ep-air", "qcom,sa8155p",
+		"qcom,adp-air";
+	qcom,board-id = <0x05010019 0>;
+};

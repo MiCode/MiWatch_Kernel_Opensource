@@ -1,0 +1,9 @@
+/dts-v1/;
+
+#include "lemans-adas-high.dtsi"
+#include "lemans-adp-star.dtsi"
+
+/ {
+	model = "Qualcomm Technologies, Inc. Lemans ADAS HIGH ADP STAR";
+	compatible = "qcom,lemans-adas-high", "qcom,lemans", "qcom,adp-star", "qcom,lemans-adas-high-adp-star";
+};

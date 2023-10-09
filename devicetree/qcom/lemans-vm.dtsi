@@ -1,0 +1,34 @@
+#include "quin-vm-common.dtsi"
+
+/ {
+	model = "Qualcomm Technologies, Inc. LeMans Virtual Machine";
+	qcom,msm-name = "SA_LEMANS_IVI";
+	qcom,msm-id = <532 0x10000>;
+};
+
+&soc {
+};
+
+&gcc {
+	status = "disabled";
+};
+
+&scc {
+	status = "disabled";
+};
+
+&regulator {
+	status = "disabled";
+};
+
+&hab {
+	vmid = <3>;
+};
+
+&spmi_bus {
+	status = "disabled";
+};
+
+&wdog {
+	status = "disabled";
+};

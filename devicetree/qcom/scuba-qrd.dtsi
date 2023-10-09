@@ -1,0 +1,339 @@
+#include <dt-bindings/clock/qcom,gcc-scuba.h>
+#include <dt-bindings/clock/qcom,gpucc-scuba.h>
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/iio/qcom,spmi-vadc.h>
+
+#include "scuba-ion.dtsi"
+#include "display/scuba-sde.dtsi"
+#include "display/scuba-sde-display-qrd.dtsi"
+#include "scuba-thermal-overlay.dtsi"
+
+&qupv3_se0_i2c {
+	status = "ok";
+
+	ioexp20: i2c0gpio-expander@20 {
+		#gpio-cells = <2>;
+		compatible = "semtech,sx1508q";
+		reg = <0x20>;
+		gpio-controller;
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&sx1508_cam0a_strobe_active
+				&sx1508_cam0b_strobe_active
+				&sx1508_cam0b_spare_active>;
+
+		sx1508_cam0a_strobe_active: sx1508_cam0a_strobe_active {
+			pins = "gpio0";
+			bias-disable;
+			output-high;
+		};
+
+		sx1508_cam0b_strobe_active: sx1508_cam0b_strobe_active {
+			pins = "gpio3";
+			bias-disable;
+			output-high;
+		};
+
+		sx1508_cam0b_spare_active: sx1508_cam0b_spare_active {
+			pins = "gpio4";
+			bias-disable;
+			output-high;
+		};
+	};
+
+	ioexp21: i2c0gpio-expander@21 {
+		#gpio-cells = <2>;
+		compatible = "semtech,sx1508q";
+		reg = <0x21>;
+		gpio-controller;
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&sx1508_lcd0_vsn_active
+				&sx1508_cam1_pwdn_active>;
+
+		sx1508_lcd0_vsn_active: sx1508_lcd0_vsn_active {
+			pins = "gpio1";
+			bias-disable;
+			output-high;
+		};
+
+		sx1508_lcd0_vsn_sleep: sx1508_lcd0_vsn_sleep {
+			pins = "gpio1";
+			bias-disable;
+			output-low;
+		};
+
+		sx1508_cam1_pwdn_active: sx1508_cam1_pwdn_active {
+			pins = "gpio4";
+			bias-disable;
+			output-high;
+		};
+	};
+
+	ioexp22: i2c0gpio-expander@22 {
+		#gpio-cells = <2>;
+		compatible = "semtech,sx1508q";
+		reg = <0x22>;
+		gpio-controller;
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&sx1508_lcd0_vsp_active>;
+
+		sx1508_lcd0_vsp_active: sx1508_lcd0_vsp_active {
+			pins = "gpio7";
+			bias-disable;
+			output-high;
+		};
+
+		sx1508_lcd0_vsp_sleep: sx1508_lcd0_vsp_sleep {
+			pins = "gpio7";
+			bias-disable;
+			output-low;
+		};
+	};
+
+	ioexp23: i2c0gpio-expander@23 {
+		#gpio-cells = <2>;
+		compatible = "semtech,sx1508q";
+		reg = <0x23>;
+		gpio-controller;
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&sx1508_cam1_strobe_active
+				&sx1508_cam2_strobe_active
+				&sx1508_cam2_pwdn_active
+				&sx1508_gmsl_power_active>;
+
+		sx1508_cam1_strobe_active: sx1508_cam1_strobe_active {
+			pins = "gpio2";
+			bias-disable;
+			output-high;
+		};
+
+		sx1508_cam2_strobe_active: sx1508_cam2_strobe_active {
+			pins = "gpio3";
+			bias-disable;
+			output-high;
+		};
+
+		sx1508_cam2_pwdn_active: sx1508_cam2_pwdn_active {
+			pins = "gpio5";
+			bias-disable;
+			output-high;
+		};
+
+		sx1508_gmsl_power_active: sx1508_gmsl_power_active {
+			pins = "gpio7";
+			bias-disable;
+			output-high;
+		};
+	};
+};
+
+&qupv3_se2_i2c {
+	status = "ok";
+
+	pinctrl-0 = <&qupv3_se2_i2c_active &lt9611_level_shift_active>;
+	pinctrl-1 = <&qupv3_se2_i2c_sleep &lt9611_level_shift_sleep>;
+
+	lt9611: lt,lt9611@2b {
+		compatible = "lt,lt9611uxc";
+		reg = <0x2b>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <46 0>;
+		interrupt-names = "lt_irq";
+		lt,irq-gpio = <&tlmm 46 0>;
+		lt,reset-gpio = <&tlmm 41 0>;
+		instance_id = <0>;
+		lt,non-pluggable;
+		lt,preferred-mode = "1920x1080";
+
+		lt,customize-modes {
+			lt,customize-mode-id@0 {
+				lt,mode-h-active = <1920>;
+				lt,mode-h-front-porch = <88>;
+				lt,mode-h-pulse-width = <44>;
+				lt,mode-h-back-porch = <148>;
+				lt,mode-h-active-high;
+				lt,mode-v-active = <1080>;
+				lt,mode-v-front-porch = <4>;
+				lt,mode-v-pulse-width = <5>;
+				lt,mode-v-back-porch = <36>;
+				lt,mode-v-active-high;
+				lt,mode-refresh-rate = <60>;
+				lt,mode-clock-in-khz = <148500>;
+			};
+		};
+
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			port@0 {
+				reg = <0>;
+				lt9611_in: endpoint {
+					remote-endpoint = <&ext_dsi_out>;
+				};
+			};
+		};
+	};
+};
+
+&soc {
+	scuba_batterydata: qcom,battery-data {
+		qcom,batt-id-range-pct = <15>;
+		#include "qg-batterydata-alium-3600mah.dtsi"
+		#include "qg-batterydata-atl466271_3300mAh.dtsi"
+	};
+};
+
+&sdhc_1 {
+	vdd-supply = <&L20A>;
+	qcom,vdd-voltage-level = <2856000 2856000>;
+	qcom,vdd-current-level = <0 570000>;
+
+	vdd-io-supply = <&L14A>;
+	qcom,vdd-io-always-on;
+	qcom,vdd-io-lpm-sup;
+	qcom,vdd-io-voltage-level = <1800000 1800000>;
+	qcom,vdd-io-current-level = <0 325000>;
+
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&sdc1_on>;
+	pinctrl-1 = <&sdc1_off>;
+
+	status = "ok";
+};
+
+&sdhc_2 {
+	vdd-supply = <&L21A>;
+	qcom,vdd-voltage-level = <2960000 3300000>;
+	qcom,vdd-current-level = <0 800000>;
+
+	vdd-io-supply = <&L4A>;
+	qcom,vdd-io-voltage-level = <1800000 2960000>;
+	qcom,vdd-io-current-level = <0 22000>;
+
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&sdc2_on>;
+	pinctrl-1 = <&sdc2_off>;
+
+	cd-gpios = <&tlmm 88 GPIO_ACTIVE_LOW>;
+
+	status = "ok";
+};
+
+&soc {
+	clk40M: can_clock {
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency = <40000000>;
+	};
+};
+
+&qupv3_se5_spi {
+	status = "okay";
+	mcp2518fd: can@0 {
+		compatible = "microchip,mcp2518fd";
+		reg = <0>;
+		clocks = <&clk40M>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <39 0>;
+		interrupt-names = "can_irq";
+		spi-max-frequency = <10000000>;
+		message-transmit-interval = <800>;
+		gpio-controller;
+		status = "okay";
+	};
+};
+
+&qupv3_se1_i2c {
+	status = "okay";
+	#address-cells = <1>;
+	#size-cells = <0>;
+	qcom,clk-freq-out = <400000>;
+
+	sx1508q: ch_io_expander@22 {
+		compatible = "semtech,sx1508q";
+		reg = <0x22>;
+		#gpio-cells = <2>;
+		#interrupt-cells = <2>;
+		gpio-controller;
+	};
+};
+
+&qupv3_se2_i2c {
+	status = "okay";
+	#address-cells = <1>;
+	#size-cells = <0>;
+	qcom,clk-freq-out = <400000>;
+
+	ch101_0: ch101_0@45 {
+		compatible = "invensense,ch101";
+		reg = <0x45>;
+		rst-gpios = <&tlmm 111 GPIO_ACTIVE_HIGH>;
+		rtc_rst-gpios = <&tlmm 80 GPIO_ACTIVE_HIGH>;
+		prg-gpios = <0 1 2 3 4 5>;
+		int-gpios = <&tlmm 95 GPIO_ACTIVE_HIGH>,
+				<&tlmm 113 GPIO_ACTIVE_HIGH>,
+				<&tlmm 114 GPIO_ACTIVE_HIGH>,
+				<&tlmm 34 GPIO_ACTIVE_HIGH>,
+				<&tlmm 35 GPIO_ACTIVE_HIGH>,
+				<&tlmm 36 GPIO_ACTIVE_HIGH>;
+	};
+};
+
+&pm2250_qg {
+	status = "disabled";
+	qcom,battery-data = <&scuba_batterydata>;
+	qcom,qg-iterm-ma = <150>;
+	qcom,hold-soc-while-full;
+	qcom,linearize-soc;
+	qcom,cl-feedback-on;
+	qcom,tcss-enable;
+	qcom,fvss-enable;
+	qcom,fvss-vbatt-mv = <3500>;
+	qcom,bass-enable;
+};
+
+&pm2250_charger {
+	interrupts-extended = <&tlmm 89 0>;
+	interrupt-names = "usb_id_irq";
+	qcom,usb-id-gpio = <&tlmm 89 0>;
+
+	pinctrl-names = "default";
+	pinctrl-0 = <&usb_id_interrupt>;
+
+	qcom,batteryless-platform;
+	qcom,auto-recharge-soc = <98>;
+	io-channels = <&pm2250_vadc ADC5_USB_IN_V_16>,
+			<&pm2250_vadc ADC5_CHG_TEMP>;
+	io-channel-names = "usb_in_voltage",
+			"chg_temp";
+};
+
+&qusb_phy0 {
+	extcon = <&pm2250_charger>;
+};
+
+&usb0 {
+	extcon = <&qusb_phy0>, <&eud>;
+};
+
+&pm2250_pwm3 {
+	status = "okay";
+};
+
+&sde_dsi {
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		port@0 {
+			reg = <0>;
+			ext_dsi_out: endpoint {
+				remote-endpoint = <&lt9611_in>;
+			};
+		};
+	};
+};

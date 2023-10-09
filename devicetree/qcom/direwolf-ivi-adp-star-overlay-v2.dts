@@ -1,0 +1,13 @@
+/dts-v1/;
+/plugin/;
+
+#include "direwolf-adp-star.dtsi"
+#include "display/direwolf-sde-display-adp-star.dtsi"
+
+/ {
+	model = "Qualcomm Technologies, Inc. DirewolfAU IVI V2 ADP-STAR";
+	compatible = "qcom,direwolf-ivi-adp-star", "qcom,direwolf-ivi",
+		"qcom,direwolf", "qcom,adp-star";
+	qcom,msm-id = <460 0x20000>;
+	qcom,board-id = <25 0>;
+};

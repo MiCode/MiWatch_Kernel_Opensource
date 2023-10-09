@@ -1,0 +1,9 @@
+/dts-v1/;
+#include "sa8155p-iot-v2.dtsi"
+
+/ {
+	model = "Qualcomm Technologies, Inc. SA8155P IOT v2 SoC";
+	compatible = "qcom,sa8155p", "qcom,sa8155p-iot";
+	qcom,pmic-name = "PM8150";
+	qcom,board-id = <0 0>;
+};

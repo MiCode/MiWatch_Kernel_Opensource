@@ -1,0 +1,11 @@
+/dts-v1/;
+
+#include "sa515m.dtsi"
+#include "sa515m-ccard.dtsi"
+
+/ {
+	model = "Qualcomm Technologies, Inc. SA515M CCARD";
+	compatible = "qcom,sa515m-ccard",
+			"qcom,sa515m", "qcom,ccard";
+	qcom,board-id = <25 0>, <25 0x100>;
+};

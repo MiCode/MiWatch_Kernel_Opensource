@@ -1,0 +1,77 @@
+#include <dt-bindings/gpio/gpio.h>
+
+&soc {
+
+};
+
+&ufsphy_mem {
+	compatible = "qcom,ufs-phy-qmp-v4-lahaina";
+
+	vdda-phy-supply = <&L8G0>;
+	vdda-pll-supply = <&L3G0>;
+	vdda-phy-max-microamp = <85700>;
+	vdda-pll-max-microamp = <18300>;
+
+	status = "ok";
+};
+
+&ufshc_mem {
+	vdd-hba-supply = <&gcc_ufs_phy_gdsc>;
+	vdd-hba-fixed-regulator;
+
+	vcc-supply = <&L17C0>;
+	vcc-voltage-level = <2504000 2504000>;
+	vcc-max-microamp = <800000>;
+
+	vccq-supply = <&L6C0>;
+	vccq-max-microamp = <750000>;
+
+	qcom,vddp-ref-clk-supply = <&L6C0>;
+	qcom,vddp-ref-clk-max-microamp = <100>;
+
+	/* Disable Write Booster Feature */
+	qcom,disable-wb-support;
+
+	status = "ok";
+};
+
+&qupv3_se12_i2c {
+	status = "ok";
+};
+
+/*
+ * Below i2c instance is enabled in direwolf-audio.dtsi,
+ * but as it causes kernel hang on Ride platform, disabling it for now
+ */
+&qupv3_se21_i2c {
+	status = "disabled";
+};
+
+&qupv3_se22_spi {
+	status = "disabled";
+};
+
+&pm8540_1_gpios {
+	vdd_gfx_en {
+		vdd_gfx_en_default: vdd_gfx_en_default {
+			pins = "gpio2";
+			function = "normal";
+			output-high;
+		};
+	};
+};
+
+&VDD_GFX_LEVEL {
+	enable-gpio = <&pm8540_1_gpios 2 GPIO_ACTIVE_HIGH>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&vdd_gfx_en_default>;
+	status = "ok";
+};
+
+/*
+ * Each QUP device that's a parent to PMIC must be listed as a critical device
+ * to GCC
+ */
+&gcc {
+	qcom,critical-devices = <&qupv3_se12_i2c>;
+};

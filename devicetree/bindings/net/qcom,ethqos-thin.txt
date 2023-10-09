@@ -1,0 +1,55 @@
+* Qualcomm Technologies, Inc. Ethernet thin driver (GMAC)
+
+This documents dwmmac based ethernet device which supports Gigabit
+ethernet for single TX and RX DMA channel pair.
+There are 2 emac instances with DWMMAC HW version 0x30000000.
+Either emac0 or emac1 instance is supported.
+For emac0 instance, comaptible should be "qcom,stmmac-ethqos-emac0"
+
+Required properties:
+- compatible: Should be "qcom,stmmac-ethqos-emac1",
+
+- reg: Address and length of the register set for the device
+
+- reg-names: Should contain register name "stmmaceth"
+
+- interrupts: Should contain the per channel interrupts
+
+- interrupt-names: Should contain per channel interrupt names
+
+- queue: queue index in MTL for this driver
+
+Rest of the properties are defined in stmmac.txt file in same directory
+
+Examples:
+
+	mtl_rx_setup: rx-queues-config {
+		snps,rx-queues-to-use = <1>;
+		snps,rx-sched-sp;
+		queue {
+			snps,dcb-algorithm;
+			snps,priority = <0x1>;
+		};
+	};
+
+	mtl_tx_setup: tx-queues-config {
+		snps,tx-queues-to-use = <1>;
+		snps,tx-sched-sp;
+		queue {
+			snps,dcb-algorithm;
+		};
+	};
+
+	emacthin_hw: ethernet@00020000 {
+		compatible = "qcom,stmmac-ethqos-emac1";
+		reg = <0x20000 0x10000>;
+		interrupts-extended = <&intc 0 945 1>;
+		interrupt-names = "tx_rx_ch1_intr";
+		mac-address = [000000000000]; /* Filled in by U-Boot */
+
+		rx-fifo-depth = <16384>;
+		tx-fifo-depth = <16384>;
+		snps,mtl-rx-config = <&mtl_rx_setup>;
+		snps,mtl-tx-config = <&mtl_tx_setup>;
+		queue = <2>
+	};

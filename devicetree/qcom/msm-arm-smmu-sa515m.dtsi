@@ -1,0 +1,66 @@
+#include <dt-bindings/interrupt-controller/arm-gic.h>
+
+&soc {
+	apps_smmu: apps-smmu@15000000 {
+		compatible = "qcom,qsmmu-v500";
+		reg = <0x15000000 0x20000>,
+			<0x15022000 0x20>;
+		reg-names = "base", "tcu-base";
+		#iommu-cells = <2>;
+		qcom,skip-init;
+		qcom,use-3-lvl-tables;
+		#global-interrupts = <1>;
+		#size-cells = <1>;
+		#address-cells = <1>;
+		ranges;
+
+		interrupts =	<GIC_SPI 65 IRQ_TYPE_LEVEL_HIGH>,
+				<GIC_SPI 70 IRQ_TYPE_LEVEL_HIGH>,
+				<GIC_SPI 71 IRQ_TYPE_LEVEL_HIGH>,
+				<GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>,
+				<GIC_SPI 73 IRQ_TYPE_LEVEL_HIGH>,
+				<GIC_SPI 94 IRQ_TYPE_LEVEL_HIGH>,
+				<GIC_SPI 95 IRQ_TYPE_LEVEL_HIGH>,
+				<GIC_SPI 96 IRQ_TYPE_LEVEL_HIGH>,
+				<GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>,
+				<GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH>,
+				<GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH>,
+				<GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH>,
+				<GIC_SPI 101 IRQ_TYPE_LEVEL_HIGH>,
+				<GIC_SPI 102 IRQ_TYPE_LEVEL_HIGH>,
+				<GIC_SPI 103 IRQ_TYPE_LEVEL_HIGH>,
+				<GIC_SPI 104 IRQ_TYPE_LEVEL_HIGH>,
+				<GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>;
+		interconnects = <&system_noc  MASTER_QDSS_BAM
+				&system_noc SLAVE_IMEM>;
+		qcom,active-only;
+
+
+		periph_tbu: periph_tbu@15025000 {
+			compatible = "qcom,qsmmuv500-tbu";
+			reg = <0x15025000 0x1000>,
+				<0x15022200 0x8>;
+			reg-names = "base", "status-reg";
+			qcom,stream-id-range = <0x0 0x400>;
+			interconnects = <&system_noc  MASTER_QDSS_BAM
+					&system_noc SLAVE_IMEM>;
+			qcom,active-only;
+		};
+
+		ipa_tbu: ipa_tbu@15029000 {
+			compatible = "qcom,qsmmuv500-tbu";
+			reg = <0x15029000 0x1000>,
+				<0x15022208 0x8>;
+			reg-names = "base", "status-reg";
+			qcom,stream-id-range = <0x400 0x400>;
+			interconnects = <&system_noc  MASTER_QDSS_BAM
+					&system_noc SLAVE_IMEM>;
+		};
+	};
+
+	apps_iommu_test_device {
+		compatible = "iommu-debug-test";
+		iommus = <&apps_smmu 0x100 0x0>;
+		qcom,iommu-dma = "disabled";
+	};
+};

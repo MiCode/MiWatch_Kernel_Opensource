@@ -1,0 +1,34 @@
+* rename devices
+
+Required properties for block and net devices rename:
+
+- compatible:		"qcom,rename-devices" compatibility string
+- device-type:		Device type to be renamed and supported device-types are block and net
+- actual-dev:		Original name of the disk or network interface assigned by generic driver
+- rename-dev:		New name of the disk or network interface to set for disks or
+			network interfaces respectively
+- rename-dev-ab:	New name of the disk to set for a/b supported disks
+
+Example:
+
+rename_devices: rename_devices {
+		compatible = "qcom,rename-devices";
+		rename_blk: rename_blk {
+			device-type = "block";
+			actual-dev = "vda", "vdb", "vdc",
+					"vdd", "vde", "vdf",
+					"vdg", "vdh", "vdi";
+			rename-dev = "system", "userdata", "vendor",
+					"persist", "modem", "bluetooth",
+					"misc", "vbmeta";
+			rename-dev-ab = "super", "userdata", "metadata",
+					"persist", "modem_a", "bluetooth_a",
+					"misc", "vbmeta_a", "vbmeta_b";
+		};
+
+		rename_net: rename_net {
+			device-type = "net";
+			actual-dev = "eth0";
+			rename-dev = "eth1";
+		};
+};

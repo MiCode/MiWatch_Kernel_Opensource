@@ -1,0 +1,8 @@
+#include "sa8195p-adp-common.dtsi"
+#include "display/sa8195p-adp-star-display.dtsi"
+
+&hsi2s {
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&aud_mux_sel_active>;
+	pinctrl-1 = <&aud_mux_sel_sleep>;
+};

@@ -1,0 +1,11 @@
+/dts-v1/;
+
+#include "qcs610.dtsi"
+#include "qcs610-opk.dtsi"
+
+/ {
+	model = "Qualcomm Technologies, Inc. QCS610 Openkit";
+	compatible = "qcom,qcs610-opk", "qcom,qcs610", "qcom,opk";
+	qcom,msm-id = <401 0x0>;
+	qcom,board-id = <32 3>;
+};

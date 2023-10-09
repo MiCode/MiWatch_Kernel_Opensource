@@ -1,0 +1,18 @@
+&soc {
+	audio_pkt_core_platform: qcom,audio-pkt-core-platform {
+		compatible = "qcom,audio-pkt-core-platform";
+	};
+};
+
+&monaco_snd {
+	qcom,model = "monaco-idp-slate_amic-snd-card";
+	qcom,mi2s-audio-intf = <1>;
+	qcom,cc-va-intf-enable = <1>;
+	qcom,wcn-btfm = <1>;
+	qcom,bt-slim-clk-src-ctrl = <1>;
+	asoc-codec  = <&cc_codec>;
+	asoc-codec-names = "cc_codec";
+	qcom,quat-mi2s-gpios = <&cc_quat_mi2s_gpios>;
+	qcom,pri-mi2s-gpios = <&cc_pri_mi2s_gpios>;
+	qcom,msm_audio_ssr_devs = <&audio_gpr>, <&lpi_tlmm>, <&audio_cc_ipc_platform>, <&cc_codec>;
+};

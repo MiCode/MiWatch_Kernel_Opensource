@@ -1,0 +1,7 @@
+#include "qcs610-opk.dtsi"
+
+/ {
+	model = "Qualcomm Technologies, Inc. QCS410 Openkit";
+	compatible = "qcom,qcs410-opk", "qcom,qcs410", "qcom,opk";
+};
+

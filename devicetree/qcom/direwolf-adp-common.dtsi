@@ -1,0 +1,168 @@
+#include <dt-bindings/gpio/gpio.h>
+#include "direwolf-cnss.dtsi"
+#include "direwolf-cnss-dual.dtsi"
+
+&soc {
+
+};
+
+&ufsphy_mem {
+	compatible = "qcom,ufs-phy-qmp-v4-lahaina";
+
+	vdda-phy-supply = <&L8G0>;
+	vdda-pll-supply = <&L3G0>;
+	vdda-phy-max-microamp = <85700>;
+	vdda-pll-max-microamp = <18300>;
+
+	status = "ok";
+};
+
+&ufshc_mem {
+	vdd-hba-supply = <&gcc_ufs_phy_gdsc>;
+	vdd-hba-fixed-regulator;
+
+	vcc-supply = <&L17C0>;
+	vcc-voltage-level = <2504000 2950000>;
+	vcc-max-microamp = <800000>;
+
+	vccq-supply = <&L6C0>;
+	vccq-max-microamp = <750000>;
+
+	vccq2-supply = <&S4A0>;
+	vccq2-max-microamp = <750000>;
+
+	qcom,vddp-ref-clk-supply = <&L6C0>;
+	qcom,vddp-ref-clk-max-microamp = <100>;
+
+	/* Disable Write Booster Feature */
+	qcom,disable-wb-support;
+
+	nvmem-cells = <&ufs0_dev>;
+	nvmem-cell-names = "ufs_dev";
+
+	vcc-low-voltage-sup;
+
+	status = "ok";
+};
+
+&ufs2phy_mem {
+	compatible = "qcom,ufs-phy-qmp-v4-lahaina";
+
+	vdda-phy-supply = <&L8G0>;
+	vdda-pll-supply = <&L3G0>;
+	vdda-phy-max-microamp = <85700>;
+	vdda-pll-max-microamp = <18300>;
+
+	status = "ok";
+};
+
+&ufshc2_mem {
+	vdd-hba-supply = <&gcc_ufs_card_gdsc>;
+	vdd-hba-fixed-regulator;
+
+	vcc-supply = <&L10C0>;
+	vcc-voltage-level = <2504000 2950000>;
+	vcc-max-microamp = <800000>;
+
+	vccq-supply = <&L3C0>;
+	vccq-max-microamp = <750000>;
+
+	vccq2-supply = <&S4A0>;
+	vccq2-max-microamp = <750000>;
+
+	qcom,vddp-ref-clk-supply = <&L3C0>;
+	qcom,vddp-ref-clk-max-microamp = <100>;
+
+	/* Disable Write Booster Feature */
+	qcom,disable-wb-support;
+
+	nvmem-cells = <&ufs1_dev>;
+	nvmem-cell-names = "ufs_dev";
+
+	vcc-low-voltage-sup;
+
+	status = "ok";
+};
+
+&pm8540_2_gpios {
+	usb20_vbus_boost {
+		usb20_vbus_boost_default: usb20_vbus_boost_default {
+			pins = "gpio9";
+			function = "normal";
+			output-high;
+			power-source = <0>;
+		};
+	};
+};
+
+&pm8540_3_gpios {
+	usb21_vbus_boost {
+		usb21_vbus_boost_default: usb21_vbus_boost_default {
+			pins = "gpio5";
+			function = "normal";
+			output-high;
+			power-source = <0>;
+		};
+	};
+};
+
+&pm8540_4_gpios {
+	usb223_vbus_boost {
+		usb22_vbus_boost_default: usb22_vbus_boost_default {
+			pins = "gpio5";
+			function = "normal";
+			output-high;
+			power-source = <0>;
+		};
+
+		usb23_vbus_boost_default: usb23_vbus_boost_default {
+			pins = "gpio9";
+			function = "normal";
+			output-high;
+			power-source = <0>;
+		};
+	};
+};
+
+&usb2 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&usb20_vbus_boost_default &usb21_vbus_boost_default
+			&usb22_vbus_boost_default &usb23_vbus_boost_default>;
+};
+
+&qupv3_se12_i2c {
+	status = "ok";
+};
+
+&pm8540_1_gpios {
+	vdd_gfx_en {
+		vdd_gfx_en_default: vdd_gfx_en_default {
+			pins = "gpio2";
+			function = "normal";
+			output-high;
+		};
+	};
+};
+
+&VDD_GFX_LEVEL {
+	enable-gpio = <&pm8540_1_gpios 2 GPIO_ACTIVE_HIGH>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&vdd_gfx_en_default>;
+	status = "ok";
+};
+
+/*
+ * Each QUP device that's a parent to PMIC must be listed as a critical device
+ * to GCC
+ */
+&gcc {
+	qcom,critical-devices = <&qupv3_se12_i2c>;
+};
+
+&cnss_pcie0 {
+	status = "ok";
+};
+
+&cnss_pcie2 {
+	status = "ok";
+};

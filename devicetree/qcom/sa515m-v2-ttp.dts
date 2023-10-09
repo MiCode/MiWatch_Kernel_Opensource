@@ -1,0 +1,9 @@
+/dts-v1/;
+
+#include "sa515m-v2-ttp.dtsi"
+
+/ {
+	model = "Qualcomm Technologies, Inc. SA515M TTP ";
+	compatible = "qcom,sa515m";
+	qcom,board-id = <30 0x0> , <30 0x100>;
+};

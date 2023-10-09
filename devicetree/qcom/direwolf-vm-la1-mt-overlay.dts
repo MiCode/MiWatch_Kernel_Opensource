@@ -1,0 +1,12 @@
+/dts-v1/;
+/plugin/;
+
+#include "direwolf-vm.dtsi"
+#include "direwolf-vm-la1-mt.dtsi"
+
+/ {
+	model = "Qualcomm Technologies, Inc. Direwolf Multi LA1 Virtual Machine";
+	compatible = "qcom,direwolf", "qcom,quinvm";
+	qcom,board-id = <0 0x3000001>;
+};
+

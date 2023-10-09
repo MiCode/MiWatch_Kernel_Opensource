@@ -1,0 +1,56 @@
+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+# Copyright 2019 Analogix Semiconductor, Inc.
+
+Analogix ANX7625 SlimPort (4K Mobile HD Transmitter)
+----------------------------------------------------
+
+The ANX7625 is an ultra-low power 4K Mobile HD Transmitter
+designed for portable devices.
+
+Required properties:
+
+ - compatible       : "analogix,anx7625"
+ - reg              : I2C address of the device
+ - ports            : Port@0, Video port for MIPI DSI input
+                      Port@1, Video port for panel or connector
+
+Optional properties:
+
+ - interrupts       : Used for interrupt pin B8
+ - enable-gpios     : Used for power on chip control, POWER_EN pin D2
+ - reset-gpios      : Used for reset chip control, RESET_N pin B7
+
+Example:
+
+	#include <dt-bindings/gpio/gpio.h>
+
+	i2c0 {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		encoder@58 {
+			compatible = "analogix,anx7625";
+			reg = <0x58>;
+			enable-gpios = <&pio 45 GPIO_ACTIVE_HIGH>;
+			reset-gpios = <&pio 73 GPIO_ACTIVE_HIGH>;
+
+			ports {
+				#address-cells = <1>;
+				#size-cells = <0>;
+
+				mipi2dp_bridge_in: port@0 {
+					reg = <0>;
+					anx7625_in: endpoint {
+						remote-endpoint = <&mipi_dsi>;
+					};
+				};
+
+				mipi2dp_bridge_out: port@1 {
+					reg = <1>;
+					anx7625_out: endpoint {
+						remote-endpoint = <&panel_in>;
+					};
+				};
+			};
+		};
+	};

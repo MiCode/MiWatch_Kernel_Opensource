@@ -1,0 +1,10 @@
+/dts-v1/;
+
+#include "monacop-standalone.dtsi"
+#include "monaco-standalone-wdp-v1.dtsi"
+
+/ {
+	model = "Qualcomm Technologies, Inc. Monaco standalone WDP V1.0";
+	compatible = "qcom,monaco", "qcom,wdp";
+	qcom,board-id = <0x010024 0x1>;
+};

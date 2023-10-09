@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: GPL-2.0-only
+obj-$(CONFIG_SMP)	+= platsmp.o
+obj-$(CONFIG_USE_OF) 	+= board-dt.o
+obj-$(CONFIG_ARCH_SDXLEMUR) += board-sdxlemur.o
+obj-$(CONFIG_ARCH_SDXNIGHTJAR) += board-sdxnightjar.o
+obj-$(CONFIG_ARCH_MONACO) += board-monaco.o
+obj-$(CONFIG_ARCH_SCUBA) += board-scuba.o
+obj-$(CONFIG_ARCH_SA515M) += board-sa515m.o
+obj-$(CONFIG_ARCH_SA415M) += board-sa415m.o

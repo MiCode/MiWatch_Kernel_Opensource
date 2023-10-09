@@ -1,0 +1,39 @@
+&pm8540_4_gpios {
+
+	sirf_boot_ctl {
+		sirf_bootctl_default: sirf_bootctl_default {
+			pins = "gpio1";
+			function = "normal";
+			output-high;
+			power-source = <0>;
+		};
+	};
+
+	sirf_enable {
+		sirf_enable_default: sirf_enable_default {
+			pins = "gpio2";
+			function = "normal";
+			output-high;
+			power-source = <0>;
+		};
+	};
+
+	sirf_reset {
+		sirf_reset_default: sirf_reset_default {
+			pins = "gpio3";
+			function = "normal";
+			output-high;
+			power-source = <0>;
+		};
+	};
+};
+
+&soc {
+	ss5_pwr_ctrl0:ss5_pwr_ctrl0 {
+		compatible = "qcom,gnss_sirf";
+		pinctrl-0 = <&sirf_reset_default>;
+		ssVreset-gpio = <&pm8540_4_gpios 3 1>;
+		ssVonoff-gpio = <&pm8540_4_gpios 2 1>;
+		ssVboot-gpio = <&pm8540_4_gpios 1 1>;
+	};
+};

@@ -1,0 +1,11 @@
+/dts-v1/;
+
+#include "sa415m.dtsi"
+
+/ {
+	model = "Qualcomm Technologies, Inc. SA415M MTP (256MB)";
+	compatible = "qcom,sa415m-ccard",
+			"qcom,sa415m", "qcom,ccard";
+	qcom,board-id = <8 0x106>;
+};
+

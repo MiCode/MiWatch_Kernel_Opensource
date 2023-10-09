@@ -1,0 +1,10 @@
+/dts-v1/;
+
+#include "monacop-standalone.dtsi"
+#include "monaco-standalone-atp-v1.dtsi"
+
+/ {
+	model = "Qualcomm Technologies, Inc. Monaco standalone ATP V1.0";
+	compatible = "qcom,monaco", "qcom,atp";
+	qcom,board-id = <0x010021 0x1>;
+};

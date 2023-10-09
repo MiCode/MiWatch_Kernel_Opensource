@@ -1,0 +1,288 @@
+#include <dt-bindings/interrupt-controller/arm-gic.h>
+#include <dt-bindings/soc/qcom,rpmh-rsc.h>
+
+/ {
+	#address-cells = <1>;
+	#size-cells = <1>;
+	model = "Qualcomm Technologies, Inc. SA415M";
+	compatible = "qcom,sa415m";
+	qcom,msm-id = <334 0x0>, <335 0x0>, <408 0x0>;
+
+	interrupt-parent = <&intc>;
+
+	memory { device_type = "memory"; reg = <0 0>; };
+
+	chosen: chosen { };
+
+	aliases {
+	};
+
+	reserved_mem: reserved-memory {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges;
+
+		peripheral2_mem: peripheral2_region@8fe00000 {
+			 no-map;
+			 reg = <0x8fe40000 0xdc0000>;
+			 label = "peripheral2_mem";
+		};
+
+		cmd_db: reserved-memory@8fe20000 {
+			compatible = "qcom,cmd-db";
+			no-map;
+			reg = <0x8fe20000 0x20000>;
+		};
+
+		aop_image_mem: aop_image_region@8fe00000 {
+			no-map;
+			reg = <0x8fe00000 0x20000>;
+		};
+
+		sbl_region: sbl_region@8fd00000 {
+		    no-map;
+		    reg = <0x8fd00000 0x100000>;
+		    label = "sbl_mem";
+		};
+
+		flex_sec_apps_mem: flex_sec_apps_regions@8fcfd000 {
+			   no-map;
+			   reg = <0x8fcfd000 0x3000>;
+		};
+
+		access_control_mem: access_control_mem@8fc80000 {
+			    no-map;
+			    reg = <0x8fc80000 0x40000>;
+		};
+
+		hyp_region: hyp_region@8fc00000 {
+		    no-map;
+		    reg = <0x8fc00000 0x80000>;
+		    label = "hyp_mem";
+		};
+
+		mss_mem: mss_region@87400000 {
+			no-map;
+			reg = <0x86c00000 0x8b00000>;
+			label = "mss_mem";
+		};
+
+		audio_mem: audio_region@0 {
+			reusable;
+			size = <0x400000>;
+		};
+
+		dump_mem: mem_dump_region {
+			reusable;
+			size = <0x400000>;
+		};
+
+		qseecom_mem: qseecom_region@0 {
+		     reusable;
+		     alignment = <0x400000>;
+		     size = <0x800000>;
+		     status = "disabled";
+		};
+
+		qseecom_ta_mem: qseecom_ta_region@0 {
+			reusable;
+			alignment = <0x400000>;
+			size = <0x400000>;
+			status = "disabled";
+		};
+
+		subsys_backup_region: subsys_backup_region {
+			      reusable;
+			      size = <0xC00000>;
+		};
+	};
+
+	cpus {
+		#size-cells = <0>;
+		#address-cells = <1>;
+
+		CPU0: cpu@0 {
+			device_type = "cpu";
+			compatible = "arm,cortex-a7";
+			enable-method = "psci";
+			reg = <0x0>;
+			#cooling-cells = <2>;
+		};
+	};
+
+	soc: soc { };
+
+	firmware: firmware {};
+};
+
+&soc {
+	#address-cells = <1>;
+	#size-cells = <1>;
+	ranges;
+
+	psci {
+		compatible = "arm,psci-1.0";
+		method = "smc";
+	};
+
+	apps_rsc: rsc@17830000 {
+		label = "apps_rsc";
+		compatible = "qcom,rpmh-rsc";
+		reg = <0x17830000 0x10000>,
+		      <0x17840000 0x10000>;
+		reg-names = "drv-0", "drv-1";
+		interrupts = <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>,
+			     <GIC_SPI 17 IRQ_TYPE_LEVEL_HIGH>;
+		qcom,tcs-offset = <0xd00>;
+		qcom,drv-id = <1>;
+		qcom,tcs-config = <ACTIVE_TCS  2>,
+				  <SLEEP_TCS   2>,
+				  <WAKE_TCS    2>,
+				  <CONTROL_TCS 1>;
+	};
+
+	intc: interrupt-controller@17800000 {
+		compatible = "qcom,msm-qgic2";
+		interrupt-controller;
+		interrupt-parent = <&intc>;
+		#interrupt-cells = <3>;
+		reg = <0x17800000 0x1000>,
+		      <0x17802000 0x1000>;
+	};
+
+	pdc: interrupt-controller@b210000 {
+		compatible = "qcom,sa415m-pdc";
+		reg = <0xb210000 0x30000>,
+		      <0xb204900 0x700>;
+		reg-names = "base", "mux-base";
+		qcom,pdc-ranges = <0 147 52>;
+		qcom,pdc-mux-ranges = <20 20 0>, <21 27 1>, <22 30 2>,
+				      <23 31 3>, <24 40 4>, <25 45 5>,
+				      <26 54 6>;
+		#interrupt-cells = <2>;
+		interrupt-parent = <&intc>;
+		interrupt-controller;
+	};
+
+	timer {
+		compatible = "arm,armv7-timer";
+		interrupts = <1 13 0xf08>,
+			<1 12 0xf08>,
+			<1 10 0xf08>,
+			<1 11 0xf08>;
+		clock-frequency = <19200000>;
+	};
+
+	timer@17820000 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges;
+		compatible = "arm,armv7-timer-mem";
+		reg = <0x17820000 0x1000>;
+		clock-frequency = <19200000>;
+
+		frame@17821000 {
+			frame-number = <0>;
+			interrupts = <0 7 0x4>,
+				     <0 6 0x4>;
+			reg = <0x17821000 0x1000>,
+			      <0x17822000 0x1000>;
+		};
+
+		frame@17823000 {
+			frame-number = <1>;
+			interrupts = <0 8 0x4>;
+			reg = <0x17823000 0x1000>;
+			status = "disabled";
+		};
+
+		frame@17824000 {
+			frame-number = <2>;
+			interrupts = <0 9 0x4>;
+			reg = <0x17824000 0x1000>;
+			status = "disabled";
+		};
+
+		frame@17825000 {
+			frame-number = <3>;
+			interrupts = <0 10 0x4>;
+			reg = <0x17825000 0x1000>;
+			status = "disabled";
+		};
+
+		frame@17826000 {
+			frame-number = <4>;
+			interrupts = <0 11 0x4>;
+			reg = <0x17826000 0x1000>;
+			status = "disabled";
+		};
+
+		frame@17827000 {
+			frame-number = <5>;
+			interrupts = <0 12 0x4>;
+			reg = <0x17827000 0x1000>;
+			status = "disabled";
+		};
+
+		frame@17828000 {
+			frame-number = <6>;
+			interrupts = <0 13 0x4>;
+			reg = <0x17828000 0x1000>;
+			status = "disabled";
+		};
+
+		frame@17829000 {
+			frame-number = <7>;
+			interrupts = <0 14 0x4>;
+			reg = <0x17829000 0x1000>;
+			status = "disabled";
+		};
+	};
+
+	qcom,msm-imem@1468B000 {
+		compatible = "qcom,msm-imem";
+		reg = <0x1468B000 0x1000>; /* Address and size of IMEM */
+		ranges = <0x0 0x1468B000 0x1000>;
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		mem_dump_table@10 {
+			compatible = "qcom,msm-imem-mem_dump_table";
+			reg = <0x10 0x8>;
+		};
+
+		restart_reason@65c {
+			compatible = "qcom,msm-imem-restart_reason";
+			reg = <0x65c 0x4>;
+		};
+
+		boot_stats@6b0 {
+			compatible = "qcom,msm-imem-boot_stats";
+			reg = <0x6b0 0x20>;
+		};
+
+		pil@94c {
+			compatible = "qcom,msm-imem-pil";
+			reg = <0x94c 0xc8>;
+		};
+
+		diag_dload@c8 {
+			compatible = "qcom,msm-imem-diag-dload";
+			reg = <0xc8 0xc8>;
+		};
+	};
+
+	restart_pshold: restart@c264000 {
+		compatible = "qcom,pshold";
+		reg = <0x0c264000 0x4>,
+			<0x01fd3000 0x4>;
+		reg-names = "pshold-base", "tcsr-boot-misc-detect";
+	};
+
+	qcom,msm-rtb {
+		compatible = "qcom,msm-rtb";
+		qcom,rtb-size = <0x100000>;
+	};
+};
+
+#include "sa415m-pinctrl.dtsi"

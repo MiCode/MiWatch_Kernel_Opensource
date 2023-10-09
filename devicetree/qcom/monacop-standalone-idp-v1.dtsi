@@ -1,0 +1,35 @@
+#include "monaco-standalone-idp-v1.dtsi"
+
+&soc {
+	qcom,rmnet-ipa {
+		status = "disabled";
+	};
+};
+
+&ipa_hw {
+	status = "disabled";
+};
+
+&pil_modem_mem {
+	reg = <0x0 0x4ab00000 0x0 0x3600000>;
+};
+
+&pil_video_mem {
+	reg = <0x0 0x4E100000 0x0 0x500000>;
+};
+
+&pil_adsp_mem {
+	reg = <0x0 0x4E600000 0x0 0x1900000>;
+};
+
+&pil_ipa_fw_mem {
+	reg = <0x0 0x4FF00000 0x0 0x10000>;
+};
+
+&pil_ipa_gsi_mem {
+	reg = <0x0 0x4FF10000 0x0 0x5000>;
+};
+
+&pil_gpu_mem {
+	reg = <0x0 0x4FF15000 0x0 0x2000>;
+};

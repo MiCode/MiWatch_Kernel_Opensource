@@ -1,0 +1,10 @@
+/dts-v1/;
+/plugin/;
+
+#include "monaco-idp-v1.1.dtsi"
+#include "monaco-slate-audio-overlay.dtsi"
+
+/ {
+	model = "Qualcomm Technologies, Inc. Monaco Aon IDP V1.1";
+	qcom,board-id = <0x010122 0x0>;
+};

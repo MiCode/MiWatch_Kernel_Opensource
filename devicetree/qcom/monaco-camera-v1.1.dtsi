@@ -1,0 +1,8 @@
+#include <dt-bindings/interrupt-controller/arm-gic.h>
+#include <dt-bindings/clock/qcom,gcc-monaco.h>
+#include <dt-bindings/interconnect/qcom,monaco.h>
+#include <dt-bindings/regulator/qcom,rpm-smd-regulator.h>
+#include "camera/monaco-camera.dtsi"
+#include "camera/monaco-camera-sensor-idp.dtsi"
+
+

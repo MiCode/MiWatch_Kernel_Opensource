@@ -1,0 +1,213 @@
+#include "qcs405.dtsi"
+#include "sa2150p-ccard-mhi.dtsi"
+
+&aliases {
+	mhi0 = &mhi_0;
+	mhi1 = &mhi_1;
+	mhi_netdev0 = &mhi_netdev_0;
+	mhi_netdev1 = &mhi_netdev_1;
+	mhi_netdev2 = &mhi_netdev_2;
+	mhi_netdev3 = &mhi_netdev_3;
+	mhi_netdev4 = &mhi_netdev_4;
+	mhi_netdev5 = &mhi_netdev_5;
+};
+
+&tlmm {
+	pinctrl-0 = <&status_gpio>;
+	pinctrl-names = "default";
+	status_gpio: status_gpio {
+		ap2mdm_status {
+			pins = "gpio80";
+			function = "gpio";
+			drive-strength = <8>;
+			bias-pull-up;
+			output-high;
+		};
+	};
+
+	sdx_ext_ipc_gpio_default: sdx_ext_ipc_gpio_default {
+		mux {
+			pins = "gpio14", "gpio79";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio14", "gpio79";
+			drive-strength = <2>;
+			bias-pull-down;
+		};
+	};
+};
+
+&soc {
+	sdx_ext_ipc: qcom,sdx_ext_ipc {
+		compatible = "qcom,sdx-ext-ipc";
+		qcom,wakeup-gpio-in = <&tlmm 14 0x00>;
+		qcom,wakeup-gpio-out = <&tlmm 79 0x00>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&sdx_ext_ipc_gpio_default>;
+	};
+};
+
+&rpm_bus {
+	rpm-regulator-ldoa1 {
+		status = "disabled";
+		pms405_l1: regulator-l1 {
+			status = "disabled";
+		};
+	};
+
+	rpm-regulator-ldoa2 {
+		status = "disabled";
+		pms405_l2: regulator-l2 {
+			status = "disabled";
+		};
+	};
+
+	rpm-regulator-ldoa7 {
+		status = "disabled";
+		pms405_l7: regulator-l7 {
+			status = "disabled";
+		};
+	};
+
+	rpm-regulator-ldoa10 {
+		status = "disabled";
+		pms405_l10: regulator-l10 {
+			status = "disabled";
+		};
+	};
+};
+
+&pms405_vadc {
+	pa_therm1 {
+		/delete-property/ qcom,ratiometric;
+		 /delete-property/ qcom,hw-settle-time;
+		label = "pa_therm1";
+		reg = <ADC5_AMUX_THM1>;
+		qcom,pre-scaling = <1 1>;
+	};
+
+	pa_therm3 {
+		/delete-property/ qcom,ratiometric;
+		/delete-property/ qcom,hw-settle-time;
+		label = "pa_therm3";
+		reg = <ADC5_AMUX_THM3>;
+		qcom,pre-scaling = <1 1>;
+	};
+};
+
+&sdhc_2 {
+	cd-gpios = <&tlmm 21 GPIO_ACTIVE_LOW>;
+};
+
+&pcie0_perst_default {
+	mux {
+		pins = "gpio107";
+		function = "gpio";
+	};
+
+	config {
+		pins = "gpio107";
+		drive-strength = <2>;
+		bias-disable;
+	};
+};
+
+&pcie0_wake_default {
+	mux {
+		pins = "gpio115";
+		function = "gpio";
+	};
+
+	config {
+		pins = "gpio115";
+		drive-strength = <2>;
+		bias-pull-down;
+	};
+};
+
+&pcie0 {
+	pinctrl-0 = <&pcie0_perst_default
+		     &pcie0_wake_default>;
+
+	perst-gpio = <&tlmm 107 0>;
+	wake-gpio = <&tlmm 115 0>;
+	/delete-property/ qcom,no-l0s-supported;
+	/delete-property/ qcom,no-l1-supported;
+};
+
+&pms405_gpios {
+	usb3_vbus_boost {
+		usb3_vbus_boost_default: usb3_vbus_boost_default {
+			pins = "gpio3";
+			function = "normal";
+			output-low;
+			power-source = <1>;
+		};
+	};
+
+	usb3_vbus_det {
+		usb3_vbus_det_default: usb3_vbus_det_default {
+			pins = "gpio12";
+			function = "normal";
+			input-enable;
+			bias-pull-down;
+			power-source = <1>;
+		};
+	};
+};
+
+&soc {
+	usb2_extcon: usb2_extcon {
+		compatible = "linux,extcon-usb-gpio";
+		id-gpio = <&tlmm 53 GPIO_ACTIVE_HIGH>;
+		vbus-gpio = <&tlmm 116 GPIO_ACTIVE_HIGH>;
+		vbus-out-gpio = <&tlmm 108 GPIO_ACTIVE_HIGH>;
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&usb2_vbus_det_default
+				&usb2_id_det_default
+				&usb2_vbus_boost_default>;
+	};
+
+	usb3_extcon: usb3_extcon {
+		compatible = "linux,extcon-usb-gpio";
+		id-gpio = <&tlmm 113 GPIO_ACTIVE_HIGH>;
+		vbus-gpio = <&pms405_gpios 12 GPIO_ACTIVE_HIGH>;
+		vbus-out-gpio = <&pms405_gpios 3 GPIO_ACTIVE_HIGH>;
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&usb3_vbus_det_default
+				&usb3_id_det_default
+				&usb3_vbus_boost_default>;
+	};
+};
+
+&usb2s {
+	extcon = <&usb2_extcon>;
+};
+
+&usb3 {
+	extcon = <&usb3_extcon>;
+};
+
+&qnand_1 {
+	status = "ok";
+};
+
+&spi_6 {
+	status = "okay";
+};
+
+&i2c_5 {
+	status = "okay";
+};
+
+&blsp1_uart4_hs {
+	status = "okay";
+};
+
+&blsp1_uart1_hs {
+	status = "okay";
+};

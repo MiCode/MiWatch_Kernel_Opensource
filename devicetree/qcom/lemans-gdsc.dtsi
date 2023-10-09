@@ -1,0 +1,59 @@
+#include "direwolf-gdsc.dtsi"
+
+&soc {
+	/delete-node/ qcom,gdsc@177004;
+	/delete-node/ syscon@152128;
+
+	gcc_apcs_gdsc_vote_ctrl: syscon@14b104 {
+		compatible = "syscon";
+		reg = <0x14b104 0x4>;
+	};
+
+	gcc_pcie_0_gdsc: qcom,gdsc@1a9004 {
+		compatible = "qcom,gdsc";
+		reg = <0x1a9004 0x4>;
+		qcom,support-hw-trigger;
+		qcom,no-status-check-on-disable;
+		qcom,collapse-vote = <&gcc_apcs_gdsc_vote_ctrl 0>;
+		qcom,retain-regs;
+		regulator-name = "gcc_pcie_0_gdsc";
+		status = "disabled";
+	};
+
+	gcc_pcie_1_gdsc: qcom,gdsc@177004 {
+		compatible = "qcom,gdsc";
+		reg = <0x177004 0x4>;
+		qcom,support-hw-trigger;
+		qcom,retain-regs;
+		qcom,no-status-check-on-disable;
+		qcom,collapse-vote = <&gcc_apcs_gdsc_vote_ctrl 1>;
+		regulator-name = "gcc_pcie_1_gdsc";
+		status = "disabled";
+	};
+
+	gcc_ufs_phy_gdsc: qcom,gdsc@183004 {
+		compatible = "qcom,gdsc";
+		reg = <0x183004 0x4>;
+		qcom,retain-regs;
+		regulator-name = "gcc_ufs_phy_gdsc";
+		status = "disabled";
+	};
+
+	gcc_usb20_prim_gdsc: qcom,gdsc@11c004 {
+		compatible = "qcom,gdsc";
+		reg = <0x11c004 0x4>;
+		regulator-name = "gcc_usb20_prim_gdsc";
+		qcom,retain-regs;
+		status = "disabled";
+	};
+
+	gpu_cc_gx_acd_reset: syscon@3d99358 {
+		compatible = "syscon";
+		reg = <0x3d99358 0x4>;
+	};
+
+	gpu_cc_gx_acd_iroot_reset: syscon@3d9958c {
+		compatible = "syscon";
+		reg = <0x3d9958c 0x4>;
+	};
+};

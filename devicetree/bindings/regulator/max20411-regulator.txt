@@ -1,0 +1,49 @@
+Maxim MAX20411 voltage regulator
+
+MAX20411 regulator is a high-efficiency, synchronous step-down converter
+that operates with a 3.0V to 5.5V input voltage range and provideds
+a 0.05V to 1.275V output range.
+
+Properties:
+- compatible
+	Usage:      required
+	Value type: <string>
+	Definition: Must be "maxim,max20411".
+
+- reg
+	Usage:      required
+	Value type: <u32>
+	Definition: I2C slave address.
+
+- enable-gpio:
+	Usage:      required
+	Value type: <phandle>
+	Definition: Phandle to GPIO used to control enable status of regulator.
+
+- regulator-name
+	Usage:      required
+	Value type: <string>
+	Definition: Specifies the name for this regulator.
+
+- regulator-min-microvolt
+	Usage:      required
+	Value type: <u32>
+	Definition: This is the minimum supported voltage in microvolts.
+
+- regulator-max-microvolt
+	Usage:      required
+	Value type: <u32>
+	Definition: This is the maximum supported voltage in microvolts.
+
+
+Example:
+&qupv3_se12_i2c {
+	VDD_GFX_LEVEL: max20411-regulator@39 {
+		reg = <0x39>;
+		compatible = "maxim,max20411";
+		enable-gpio = <&pm8540_1_gpios 2 GPIO_ACTIVE_HIGH>;
+		regulator-name = "max20411-vout";
+		regulator-min-microvolt = <500000>;
+		regulator-max-microvolt = <968750>;
+	};
+};
